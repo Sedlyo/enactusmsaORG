@@ -43,7 +43,7 @@ export default function About() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Images */}
           <div className={`grid grid-cols-2 gap-4 transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-            {[about.image1, about.image2, about.image3, about.image4].map((src, i) => (
+            {about.images.slice(0, 4).map((src, i) => (
               <div key={i} className="aspect-square overflow-hidden rounded-lg img-zoom">
                 <img src={src} alt={`Team ${i + 1}`} className="w-full h-full object-cover" />
               </div>

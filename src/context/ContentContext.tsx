@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
+import { supabase } from '../lib/supabase';
 
 export interface TeamMember {
   id: number;
@@ -34,10 +35,7 @@ export interface SiteContent {
     stat2Label: string;
     stat3Value: string;
     stat3Label: string;
-    image1: string;
-    image2: string;
-    image3: string;
-    image4: string;
+    images: string[];
   };
   committees: Committee[];
   team: TeamMember[];
@@ -55,7 +53,7 @@ export interface SiteContent {
   };
 }
 
-const defaultContent: SiteContent = {
+export const defaultContent: SiteContent = {
   hero: {
     subtitle: 'Enactus: Where purpose and creativity meet.',
     enactusLogo: '/assets/EnactusLOGO.png',
@@ -74,10 +72,11 @@ const defaultContent: SiteContent = {
     stat2Label: 'Projects',
     stat3Value: '5+',
     stat3Label: 'Years Active',
-    image1: '/assets/team-board.jpg',
-    image2: '/assets/team-president.jpg',
-    image3: '/assets/team-board.jpg',
-    image4: '/assets/team-president.jpg',
+    images: [
+      '/assets/team-board.jpg',
+      '/assets/team-president.jpg',
+      '/assets/placeholder.png',
+    ],
   },
   committees: [
     { name: 'PR & FR', tagline: "IT'S A MARATHON NOT A SPRINT", description: 'The PR & FR Committee is responsible for building and maintaining relationships with partners, sponsors, and external organizations.' },
@@ -113,31 +112,77 @@ const defaultContent: SiteContent = {
 
 interface ContentContextType {
   content: SiteContent;
-  updateContent: (newContent: SiteContent) => void;
-  resetContent: () => void;
+  updateContent: (newContent: SiteContent) => Promise<void>;
+  resetContent: () => Promise<void>;
+  loading: boolean;
 }
 
 const ContentContext = createContext<ContentContextType | null>(null);
 
 export function ContentProvider({ children }: { children: ReactNode }) {
-  const [content, setContent] = useState<SiteContent>(() => {
-    try {
-      const saved = localStorage.getItem('enactus-content');
-      return saved ? JSON.parse(saved) : defaultContent;
-    } catch {
-      return defaultContent;
-    }
-  });
+  const [content, setContent] = useState<SiteContent>(defaultContent);
+  const [loading, setLoading] = useState(true);
 
+  // Load content from Supabase on mount
   useEffect(() => {
-    localStorage.setItem('enactus-content', JSON.stringify(content));
-  }, [content]);
+    const loadContent = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('site_content')
+          .select('content')
+          .eq('id', 1)
+          .single();
 
-  const updateContent = (newContent: SiteContent) => setContent(newContent);
-  const resetContent = () => setContent(defaultContent);
+        if (error) throw error;
+
+        if (data?.content && Object.keys(data.content).length > 0) {
+          setContent({ ...defaultContent, ...data.content });
+        }
+      } catch (err) {
+        console.error('Failed to load content:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadContent();
+
+    // Real-time updates — when admin saves, all visitors see it instantly
+    const channel = supabase
+      .channel('site_content_changes')
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'site_content',
+      }, (payload) => {
+        if (payload.new?.content) {
+          setContent({ ...defaultContent, ...payload.new.content });
+        }
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, []);
+
+  const updateContent = async (newContent: SiteContent) => {
+    setContent(newContent);
+    try {
+      const { error } = await supabase
+        .from('site_content')
+        .update({ content: newContent, updated_at: new Date().toISOString() })
+        .eq('id', 1);
+      if (error) throw error;
+    } catch (err) {
+      console.error('Failed to save content:', err);
+    }
+  };
+
+  const resetContent = async () => {
+    await updateContent(defaultContent);
+  };
 
   return (
-    <ContentContext.Provider value={{ content, updateContent, resetContent }}>
+    <ContentContext.Provider value={{ content, updateContent, resetContent, loading }}>
       {children}
     </ContentContext.Provider>
   );

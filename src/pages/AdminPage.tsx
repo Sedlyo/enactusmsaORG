@@ -98,18 +98,18 @@ export default function AdminPage() {
     }
   };
 
-  const handleSave = () => {
-    updateContent(draft);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
-  };
+  const handleSave = async () => {
+  await updateContent(draft);
+  setSaved(true);
+  setTimeout(() => setSaved(false), 3000);
+};
+  const handleReset = async () => {
+  if (confirm('Reset all content to defaults? This cannot be undone.')) {
+    await resetContent();
+    setDraft(content);
+  }
+};
 
-  const handleReset = () => {
-    if (confirm('Reset all content to defaults? This cannot be undone.')) {
-      resetContent();
-      setDraft(content);
-    }
-  };
 
   const updateDraft = (path: string[], value: unknown) => {
     setDraft((prev) => {
@@ -249,10 +249,18 @@ export default function AdminPage() {
             <TextField label="Stat 3 Label" value={draft.about.stat3Label} onChange={(v) => updateDraft(['about', 'stat3Label'], v)} />
           </div>
           <div className="grid grid-cols-2 gap-4">
-            <ImageUploader label="Image 1" value={draft.about.image1} onChange={(v) => updateDraft(['about', 'image1'], v)} />
-            <ImageUploader label="Image 2" value={draft.about.image2} onChange={(v) => updateDraft(['about', 'image2'], v)} />
-            <ImageUploader label="Image 3" value={draft.about.image3} onChange={(v) => updateDraft(['about', 'image3'], v)} />
-            <ImageUploader label="Image 4" value={draft.about.image4} onChange={(v) => updateDraft(['about', 'image4'], v)} />
+            {draft.about.images.map((img, i) => (
+              <ImageUploader
+                key={i}
+                label={`Image ${i + 1}`}
+                value={img}
+                onChange={(v) => {
+                  const updatedImages = [...draft.about.images];
+                  updatedImages[i] = v;
+                  setDraft({ ...draft, about: { ...draft.about, images: updatedImages } });
+                }}
+              />
+            ))}
           </div>
         </SectionPanel>
 
