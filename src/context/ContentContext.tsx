@@ -72,10 +72,10 @@ export const defaultContent: SiteContent = {
     stat3Value: '5+',
     stat3Label: 'Years Active',
     images: [
-      '/assets/placeholder.png',
-      '/assets/placeholder.png',
-      '/assets/placeholder.png',
-      '/assets/placeholder.png',
+      '/assets/placeholder.png?v=1',
+      '/assets/placeholder.png?v=2',
+      '/assets/placeholder.png?v=3',
+      '/assets/placeholder.png?v=4',
     ],
   },
   committees: [
