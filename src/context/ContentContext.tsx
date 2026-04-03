@@ -165,17 +165,25 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const updateContent = async (newContent: SiteContent) => {
-    setContent(newContent);
-    try {
-      const { error } = await supabase
-        .from('site_content')
-        .update({ content: newContent, updated_at: new Date().toISOString() })
-        .eq('id', 1);
-      if (error) throw error;
-    } catch (err) {
-      console.error('Failed to save content:', err);
+  setContent(newContent);
+  try {
+    console.log('Saving to Supabase...');
+    console.log('URL:', import.meta.env.VITE_SUPABASE_URL);
+    const { data, error } = await supabase
+      .from('site_content')
+      .update({ content: newContent, updated_at: new Date().toISOString() })
+      .eq('id', 1)
+      .select();
+    
+    if (error) {
+      console.error('Supabase error:', error);
+    } else {
+      console.log('Saved successfully:', data);
     }
-  };
+  } catch (err) {
+    console.error('Failed to save content:', err);
+  }
+};
 
   const resetContent = async () => {
     await updateContent(defaultContent);
