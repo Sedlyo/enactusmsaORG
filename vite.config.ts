@@ -4,10 +4,12 @@ import { defineConfig } from "vite"
 import { inspectAttr } from 'kimi-plugin-inspect-react'
 
 export default defineConfig({
+  // Make sure assets work correctly on Netlify
   base: '/',
   build: {
-    // enable sourcemaps
-    sourcemap: true,
+    outDir: 'dist',   // Vite default, matches Netlify's publish folder
+    sourcemap: true,  // optional, useful for debugging
+    emptyOutDir: true // clear dist folder on every build
   },
   plugins: [
     inspectAttr(),
@@ -17,5 +19,5 @@ export default defineConfig({
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
-  },
-})
+  }
+});
