@@ -107,7 +107,7 @@ export const defaultContent: SiteContent = {
     heading: 'Contact Us',
     subheading: 'Have a question...',
     email: 'enactus@msa.edu.eg',
-    phone: '+20 000 000 0000',
+    phone: '',
     address: 'MSA University, Cairo, Egypt',
   },
 };
