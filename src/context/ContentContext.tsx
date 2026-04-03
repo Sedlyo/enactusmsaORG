@@ -1,6 +1,5 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState } from 'react';
 import type { ReactNode } from 'react';
-import { supabase } from '../lib/supabase';
 
 export interface TeamMember {
   id: number;
@@ -61,11 +60,11 @@ export const defaultContent: SiteContent = {
     msaSubtitle: 'A October University for Modern Sciences & Arts organization',
   },
   about: {
-    title: 'about us',
+    title: '',
     heading: 'Who We Are',
-    paragraph1: 'Enactus MSA is a student organization at October University for Modern Sciences & Arts, focused on social entrepreneurship. We bring together passionate students who believe in the power of business to create a better world.',
-    paragraph2: 'Through innovative projects, we address real community challenges — from environmental sustainability to economic empowerment — making a lasting impact on the people and communities we serve.',
-    paragraph3: 'Guided by our values of integrity, teamwork, and excellence, we develop the next generation of leaders who will shape a more equitable and sustainable future.',
+    paragraph1: 'Enactus MSA is a student organization...',
+    paragraph2: 'Through innovative projects...',
+    paragraph3: 'Guided by our values...',
     stat1Value: '50+',
     stat1Label: 'Active Members',
     stat2Value: '10+',
@@ -73,47 +72,50 @@ export const defaultContent: SiteContent = {
     stat3Value: '5+',
     stat3Label: 'Years Active',
     images: [
-      '/assets/team-board.jpg',
-      '/assets/team-president.jpg',
+      '/assets/placeholder.png',
+      '/assets/placeholder.png',
+      '/assets/placeholder.png',
       '/assets/placeholder.png',
     ],
   },
   committees: [
-    { name: 'PR & FR', tagline: "IT'S A MARATHON NOT A SPRINT", description: 'The PR & FR Committee is responsible for building and maintaining relationships with partners, sponsors, and external organizations.' },
-    { name: 'Logistics', tagline: "IT'S A MARATHON NOT A SPRINT", description: 'The Logistics Committee ensures smooth operations behind every event and project.' },
-    { name: 'Marketing', tagline: "IT'S A MARATHON NOT A SPRINT", description: 'The Marketing Committee drives our brand presence and outreach.' },
-    { name: 'R&D', tagline: "IT'S A MARATHON NOT A SPRINT", description: 'The Research & Development Committee is the intellectual backbone of our organization.' },
-    { name: 'Visuals', tagline: "IT'S A MARATHON NOT A SPRINT", description: 'Our Visuals Committee consists of Photography, Design, and Video Editing teams.' },
-    { name: 'Human Resources', tagline: "IT'S A MARATHON NOT A SPRINT", description: 'Our HR team keeps track of members performance through assessments and evaluations.' },
-    { name: 'Volunteering', tagline: "IT'S A MARATHON NOT A SPRINT", description: 'The Volunteering Committee connects our members with meaningful community initiatives.' },
-    { name: 'Operations', tagline: "IT'S A MARATHON NOT A SPRINT", description: 'The Operations Committee is the driving force behind executing our strategy.' },
-    { name: 'PM', tagline: "IT'S A MARATHON NOT A SPRINT", description: 'The Project Management Committee oversees all active projects within Enactus MSA.' },
+    { name: 'PR & FR', tagline: "IT'S A MARATHON NOT A SPRINT", description: '...' },
+    { name: 'Logistics', tagline: "IT'S A MARATHON NOT A SPRINT", description: '...' },
+    { name: 'Human Resources', tagline: "IT'S A MARATHON NOT A SPRINT", description: '...' },
+    { name: 'Project Management', tagline: "IT'S A MARATHON NOT A SPRINT", description: '...' },
+    { name: 'Visuals', tagline: "IT'S A MARATHON NOT A SPRINT", description: '...' },
+    { name: 'Presentation', tagline: "IT'S A MARATHON NOT A SPRINT", description: '...' },
+    { name: 'R&D', tagline: "IT'S A MARATHON NOT A SPRINT", description: '...' },
+    { name: 'Marketing', tagline: "IT'S A MARATHON NOT A SPRINT", description: '...' },
+    { name: 'Operations', tagline: "IT'S A MARATHON NOT A SPRINT", description: '...' },
   ],
   team: [
     { id: 1, name: 'Ahmed Bahi', role: 'CLUB PRESIDENT', image: '/assets/placeholder.png', achievement: 'Placeholder Achievement' },
-    { id: 2, name: 'Placeholder Name', role: 'VICE PRESIDENT', image: '/assets/placeholder.png', achievement: 'Placeholder Achievement' },
-    { id: 3, name: 'Placeholder Name', role: 'HEAD OF MARKETING', image: '/assets/placeholder.png', achievement: 'Placeholder Achievement' },
-    { id: 4, name: 'Placeholder Name', role: 'HEAD OF LOGISTICS', image: '/assets/placeholder.png', achievement: 'Placeholder Achievement' },
-    { id: 5, name: 'Placeholder Name', role: 'HEAD OF HR', image: '/assets/placeholder.png', achievement: 'Placeholder Achievement' },
+    { id: 2, name: 'null', role: 'VICE PRESIDENT', image: '/assets/placeholder.png?v=2', achievement: 'Placeholder Achievement' },
+    { id: 3, name: 'null', role: 'PROJECT MANAGER', image: '/assets/placeholder.png?v=3', achievement: 'Placeholder Achievement' },
   ],
   sponsors: {
     title: 'OUR SPONSORS',
-    description: 'We are proud to partner with organizations that share our vision for a better world.',
-    logos: [],
+    description: 'We are proud...',
+    logos: [
+      '/assets/placeholder.png',
+      '/assets/placeholder.png?v=2',
+      '/assets/placeholder.png?v=3',
+    ],
   },
   contact: {
-    heading: 'Get In Touch',
-    subheading: 'Have a question or want to get involved? Reach out to us.',
+    heading: 'Contact Us',
+    subheading: 'Have a question...',
     email: 'enactus@msa.edu.eg',
     phone: '+20 000 000 0000',
-    address: 'October University for Modern Sciences & Arts, Cairo, Egypt',
+    address: 'MSA University, Cairo, Egypt',
   },
 };
 
 interface ContentContextType {
   content: SiteContent;
-  updateContent: (newContent: SiteContent) => Promise<void>;
-  resetContent: () => Promise<void>;
+  updateContent: (newContent: SiteContent) => void;
+  resetContent: () => void;
   loading: boolean;
 }
 
@@ -121,72 +123,14 @@ const ContentContext = createContext<ContentContextType | null>(null);
 
 export function ContentProvider({ children }: { children: ReactNode }) {
   const [content, setContent] = useState<SiteContent>(defaultContent);
-  const [loading, setLoading] = useState(true);
+  const [loading] = useState(false);
 
-  // Load content from Supabase on mount
-  useEffect(() => {
-    const loadContent = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('site_content')
-          .select('content')
-          .eq('id', 1)
-          .single();
+  const updateContent = (newContent: SiteContent) => {
+    setContent(newContent);
+  };
 
-        if (error) throw error;
-
-        if (data?.content && Object.keys(data.content).length > 0) {
-          setContent({ ...defaultContent, ...data.content });
-        }
-      } catch (err) {
-        console.error('Failed to load content:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadContent();
-
-    // Real-time updates — when admin saves, all visitors see it instantly
-    const channel = supabase
-      .channel('site_content_changes')
-      .on('postgres_changes', {
-        event: 'UPDATE',
-        schema: 'public',
-        table: 'site_content',
-      }, (payload) => {
-        if (payload.new?.content) {
-          setContent({ ...defaultContent, ...payload.new.content });
-        }
-      })
-      .subscribe();
-
-    return () => { supabase.removeChannel(channel); };
-  }, []);
-
-  const updateContent = async (newContent: SiteContent) => {
-  setContent(newContent);
-  try {
-    console.log('Saving to Supabase...');
-    console.log('URL:', import.meta.env.VITE_SUPABASE_URL);
-    const { data, error } = await supabase
-      .from('site_content')
-      .update({ content: newContent, updated_at: new Date().toISOString() })
-      .eq('id', 1)
-      .select();
-    
-    if (error) {
-      console.error('Supabase error:', error);
-    } else {
-      console.log('Saved successfully:', data);
-    }
-  } catch (err) {
-    console.error('Failed to save content:', err);
-  }
-};
-
-  const resetContent = async () => {
-    await updateContent(defaultContent);
+  const resetContent = () => {
+    setContent(defaultContent);
   };
 
   return (
