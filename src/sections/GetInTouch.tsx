@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 export default function GetInTouch() {
   const sectionRef = useRef<HTMLElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
+  const [, setIsVisible] = useState(false);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
