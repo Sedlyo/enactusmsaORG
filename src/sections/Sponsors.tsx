@@ -20,22 +20,39 @@ export default function Sponsors() {
     <section ref={sectionRef} className="relative w-full bg-black py-20 overflow-hidden">
 
       {/* Description */}
-      <div className="container-custom section-padding mb-12">
-        <div className={`transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          <p className="text-white/40 text-sm uppercase tracking-widest mb-4">Partners & Supporters</p>
-          <p className="text-white/70 text-base sm:text-lg max-w-2xl">{sponsors.description}</p>
-        </div>
-      </div>
+<div className="container-custom section-padding mb-16">
+  <div className={`transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+    <p className="text-amber-400 text-xs uppercase tracking-[0.3em] mb-4">Partners & Supporters</p>
+    <h2 className="text-5xl sm:text-6xl lg:text-8xl font-black text-white uppercase leading-none tracking-tighter mb-6">
+      OUR <span className="text-amber-400">SPONSORS</span>
+    </h2>
+    <p className="text-white/50 text-base sm:text-lg max-w-2xl">{sponsors.description}</p>
+  </div>
+</div>
 
-      {/* Scrolling title text */}
-      <div className="flex flex-col items-center gap-2 overflow-hidden mb-16">
+    {/* Scrolling title text */}
+<div className="flex flex-col items-center gap-2 overflow-hidden mb-16">
   <div className="flex items-center animate-marquee-reverse whitespace-nowrap">
-    {[...Array(1)].map((_, i) => (
-      <span key={i} className="inline-flex items-center text-4xl sm:text-5xl lg:text-7xl font-black text-white uppercase tracking-tight mr-12">
-       
-        <img src="/assets/EnactusLOGO.png" alt="" className="h-10 w-10 sm:h-12 sm:w-12 object-contain mx-4 sm:mx-6 inline-block" />
+    {[...Array(2)].map((_, i) => (
+      <span key={i} className="inline-flex items-center text-3xl sm:text-4xl lg:text-5xl font-black text-white/10 uppercase tracking-tight mr-12">
+        <img src="/assets/EnactusLOGO.png" alt="" className="h-8 w-8 object-contain mx-4 inline-block opacity-10" />
         {sponsors.title}
-        
+        <img src="/assets/EnactusLOGO.png" alt="" className="h-8 w-8 object-contain mx-4 inline-block opacity-10" />
+        {sponsors.title}
+        <img src="/assets/EnactusLOGO.png" alt="" className="h-8 w-8 object-contain mx-4 inline-block opacity-10" />
+        {sponsors.title}
+      </span>
+    ))}
+  </div>
+  <div className="flex items-center animate-marquee whitespace-nowrap">
+    {[...Array(2)].map((_, i) => (
+      <span key={i} className="inline-flex items-center text-3xl sm:text-4xl lg:text-5xl font-black text-white/5 uppercase tracking-tight mr-12">
+        <img src="/assets/EnactusLOGO.png" alt="" className="h-8 w-8 object-contain mx-4 inline-block opacity-5" />
+        {sponsors.title}
+        <img src="/assets/EnactusLOGO.png" alt="" className="h-8 w-8 object-contain mx-4 inline-block opacity-5" />
+        {sponsors.title}
+        <img src="/assets/EnactusLOGO.png" alt="" className="h-8 w-8 object-contain mx-4 inline-block opacity-5" />
+        {sponsors.title}
       </span>
     ))}
   </div>
