@@ -15,7 +15,7 @@ export default function Hero() {
   return (
     <section className="relative min-h-screen w-full bg-black overflow-hidden">
       {/* Map background */}
-      <div className="absolute inset-0 z-0">
+      {/* <div className="absolute inset-0 z-0">
         <img src="/assets/map.png" alt="" className="w-full h-full object-cover opacity-20 grayscale" />
         <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at center, transparent 60%, black 100%)' }} />
       </div>

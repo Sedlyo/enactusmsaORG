@@ -1,68 +1,4 @@
 import { Instagram, ArrowUp } from 'lucide-react';
-import { useState, useRef, useEffect } from 'react';
-
-function MarioLogoEasterEgg() {
-  const [clicks, setClicks] = useState(0);
-  const [active, setActive] = useState(false);
-  const [position, setPosition] = useState(-100);
-  const rafRef = useRef<number | null>(null);
-
-  const handleClick = () => {
-    setClicks((c) => {
-      const next = c + 1;
-      if (next >= 10) {
-        setActive(true);
-        setPosition(-100);
-        return 0;
-      }
-      return next;
-    });
-  };
-
-  useEffect(() => {
-    if (!active) return;
-    let pos = -100;
-    const animate = () => {
-      pos += 2;
-      setPosition(pos);
-      if (pos < window.innerWidth + 100) {
-        rafRef.current = requestAnimationFrame(animate);
-      } else {
-        setActive(false);
-        setPosition(-100);
-      }
-    };
-    rafRef.current = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(rafRef.current!);
-  }, [active]);
-
-  return (
-    <>
-      <div
-        onClick={handleClick}
-        className="flex items-center gap-2 justify-start w-full lg:w-auto cursor-pointer select-none"
-      >
-        <img src="/assets/enactusMSA2.png" alt="Enactus MSA" className="h-16 w-auto" />
-        {clicks > 0 && (
-          <span className="text-white/20 text-xs font-mono">{clicks}/10</span>
-        )}
-      </div>
-
-      {active && (
-        <div
-          className="fixed bottom-16 z-[999] pointer-events-none"
-          style={{ left: position }}
-        >
-          <img
-            src="https://media.tenor.com/7Fqoi3VXvPQAAAAj/mario-running-8-bit.gif"
-            alt="Mario"
-            style={{ width: '80px', imageRendering: 'pixelated' }}
-          />
-        </div>
-      )}
-    </>
-  );
-}
 
 export default function Footer() {
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -72,7 +8,9 @@ export default function Footer() {
       <div className="container-custom section-padding">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
 
-          <MarioLogoEasterEgg />
+          <div className="flex justify-start w-full lg:w-auto">
+            <img src="/assets/enactusMSA2.png" alt="Enactus MSA" className="h-16 w-auto" />
+          </div>
 
           <div className="text-center">
             <p className="text-white/40 text-sm">
