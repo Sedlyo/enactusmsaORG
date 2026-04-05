@@ -74,9 +74,6 @@ export default function About() {
           </div>
         </div>
       </div>
-
-      <div className="absolute top-20 right-10 w-32 h-32 border border-white/10 rounded-full" />
-      <div className="absolute bottom-20 left-10 w-20 h-20 border border-white/5 rounded-full" />
     </section>
   );
 }
