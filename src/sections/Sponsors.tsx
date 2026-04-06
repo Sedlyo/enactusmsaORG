@@ -1,24 +1,13 @@
-import { useEffect, useRef, useState } from 'react';
 import { useContent } from '../context/ContentContext';
+import { useInView } from '../hooks/use-in-view';
 
 export default function Sponsors() {
   const { content } = useContent();
   const { sponsors } = content;
-  const sectionRef = useRef<HTMLElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setIsVisible(true); observer.disconnect(); } },
-      { threshold: 0.2 }
-    );
-    if (sectionRef.current) observer.observe(sectionRef.current);
-    return () => observer.disconnect();
-  }, []);
+  const { ref, isVisible } = useInView(0.2);
 
   return (
-    <section ref={sectionRef} className="relative w-full bg-black py-16 overflow-hidden">
-
+    <section ref={ref} className="relative w-full bg-black py-16 overflow-hidden">
       {/* Header */}
       <div className="container-custom section-padding mb-10">
         <div className={`transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
@@ -51,7 +40,7 @@ export default function Sponsors() {
         </div>
       )}
 
-      {/* Subtle scrolling background text — decorative only */}
+      {/* Scrolling background text */}
       <div className="flex flex-col gap-1 overflow-hidden opacity-[0.8] pointer-events-none select-none">
         <div className="flex animate-marquee whitespace-nowrap">
           {[...Array(8)].map((_, i) => (
@@ -70,7 +59,6 @@ export default function Sponsors() {
           ))}
         </div>
       </div>
-
     </section>
   );
 }

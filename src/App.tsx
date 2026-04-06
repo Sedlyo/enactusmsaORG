@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import Hero from './sections/Hero';
 import About from './sections/About';
@@ -14,17 +14,7 @@ import AdminPage from './pages/AdminPage';
 import { ContentProvider } from './context/ContentContext';
 import './App.css';
 
-function AppRouter() {
-  const [isAdmin, setIsAdmin] = useState(window.location.hash === '#/admin');
-
-  useEffect(() => {
-    const handleHash = () => setIsAdmin(window.location.hash === '#/admin');
-    window.addEventListener('hashchange', handleHash);
-    return () => window.removeEventListener('hashchange', handleHash);
-  }, []);
-
-  if (isAdmin) return <AdminPage />;
-
+function LandingPage() {
   return (
     <div className="min-h-screen bg-black text-white overflow-x-hidden">
       <Navigation />
@@ -47,7 +37,12 @@ function AppRouter() {
 function App() {
   return (
     <ContentProvider>
-      <AppRouter />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/admin" element={<AdminPage />} />
+        </Routes>
+      </BrowserRouter>
     </ContentProvider>
   );
 }

@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 
 export interface TeamMember {
@@ -23,7 +23,6 @@ export interface SiteContent {
     msaSubtitle: string;
   };
   about: {
-    title: string;
     heading: string;
     paragraph1: string;
     paragraph2: string;
@@ -35,6 +34,14 @@ export interface SiteContent {
     stat3Value: string;
     stat3Label: string;
     images: string[];
+  };
+  stats: {
+    yearsOfExperience: number;
+    projectsCompleted: number;
+  };
+  board: {
+    images: string[];
+    description: string;
   };
   committees: Committee[];
   team: TeamMember[];
@@ -60,7 +67,6 @@ export const defaultContent: SiteContent = {
     msaSubtitle: 'A October University for Modern Sciences & Arts organization',
   },
   about: {
-    title: '',
     heading: 'Who We Are',
     paragraph1: 'Enactus MSA is a student organization...',
     paragraph2: 'Through innovative projects...',
@@ -77,6 +83,19 @@ export const defaultContent: SiteContent = {
       '/assets/placeholder.png?v=3',
       '/assets/placeholder.png?v=4',
     ],
+  },
+  stats: {
+    yearsOfExperience: 5,
+    projectsCompleted: 10,
+  },
+  board: {
+    images: [
+      '/assets/placeholder.png?v=board1',
+      '/assets/placeholder.png?v=board2',
+      '/assets/placeholder.png?v=board3',
+    ],
+    description:
+      'Our dedicated board members lead the team with passion and vision, driving impactful projects and fostering a culture of innovation and social responsibility.',
   },
   committees: [
     { name: 'PR & FR', tagline: "IT'S A MARATHON NOT A SPRINT", description: '...' },
@@ -112,6 +131,30 @@ export const defaultContent: SiteContent = {
   },
 };
 
+const STORAGE_KEY = 'enactus-msa-content';
+
+function loadContent(): SiteContent {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      // Merge with defaults to handle any new fields added after save
+      return { ...defaultContent, ...parsed };
+    }
+  } catch {
+    // Corrupted data — fall back to defaults
+  }
+  return defaultContent;
+}
+
+function saveContent(content: SiteContent) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(content));
+  } catch {
+    // Storage full or unavailable
+  }
+}
+
 interface ContentContextType {
   content: SiteContent;
   updateContent: (newContent: SiteContent) => void;
@@ -122,8 +165,13 @@ interface ContentContextType {
 const ContentContext = createContext<ContentContextType | null>(null);
 
 export function ContentProvider({ children }: { children: ReactNode }) {
-  const [content, setContent] = useState<SiteContent>(defaultContent);
+  const [content, setContent] = useState<SiteContent>(loadContent);
   const [loading] = useState(false);
+
+  // Persist whenever content changes
+  useEffect(() => {
+    saveContent(content);
+  }, [content]);
 
   const updateContent = (newContent: SiteContent) => {
     setContent(newContent);
@@ -131,6 +179,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
 
   const resetContent = () => {
     setContent(defaultContent);
+    localStorage.removeItem(STORAGE_KEY);
   };
 
   return (

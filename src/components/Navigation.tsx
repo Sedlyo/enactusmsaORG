@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
+import TransitionOverlay from './TransitionOverlay';
 
 const navLinks = [
   { name: 'Home', href: '#home' },
@@ -42,40 +43,7 @@ export default function Navigation() {
 
   return (
     <>
-      {/* Page transition overlay */}
-      <div
-        className={`fixed inset-0 z-[100] pointer-events-none transition-all duration-500 ${
-          transitioning
-            ? 'opacity-100 scale-100'
-            : 'opacity-0 scale-y-0'
-        }`}
-        style={{ transformOrigin: 'top' }}
-      >
-        {/* Main sweep */}
-        <div
-          className={`absolute inset-0 bg-amber-400 transition-all duration-500 ${
-            transitioning ? 'translate-y-0' : '-translate-y-full'
-          }`}
-          style={{ transitionTimingFunction: 'cubic-bezier(0.76, 0, 0.24, 1)' }}
-        />
-        {/* Second layer for depth */}
-        <div
-          className={`absolute inset-0 bg-amber-500 transition-all duration-500 delay-75 ${
-            transitioning ? 'translate-y-0' : '-translate-y-full'
-          }`}
-          style={{ transitionTimingFunction: 'cubic-bezier(0.76, 0, 0.24, 1)' }}
-        />
-        {/* Enactus wordmark in center */}
-        <div
-          className={`absolute inset-0 flex items-center justify-center transition-all duration-300 delay-200 ${
-            transitioning ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
-          }`}
-        >
-          <span className="text-black text-6xl font-black tracking-tighter">
-            ENACTUS
-          </span>
-        </div>
-      </div>
+      <TransitionOverlay active={transitioning} />
 
       {/* Desktop Navigation */}
       <nav
@@ -87,7 +55,6 @@ export default function Navigation() {
       >
         <div className="container-custom section-padding">
           <div className="flex items-center justify-between h-16">
-            {/* Logo */}
             <a
               href="#home"
               onClick={(e) => {
@@ -99,7 +66,6 @@ export default function Navigation() {
               <img src="/assets/enactusMSA2.png" alt="Enactus MSA" className="h-20 w-auto" />
             </a>
 
-            {/* Desktop Links */}
             <div className="hidden lg:flex items-center gap-8">
               {navLinks.map((link) => (
                 <a
@@ -116,7 +82,6 @@ export default function Navigation() {
               ))}
             </div>
 
-            {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="lg:hidden text-white p-2"

@@ -1,26 +1,18 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { useContent } from '../context/ContentContext';
+import { useInView } from '../hooks/use-in-view';
 import CommitteesPage from './CommitteesPage';
+import TransitionOverlay from '../components/TransitionOverlay';
 import { ArrowUpRight } from 'lucide-react';
 
 export default function Services() {
   const { content } = useContent();
   const { committees } = content;
-  const sectionRef = useRef<HTMLElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
+  const { ref, isVisible } = useInView(0.1);
   const [committeeOpen, setCommitteeOpen] = useState(false);
   const [committeeIndex, setCommitteeIndex] = useState(0);
   const [transitioning, setTransitioning] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setIsVisible(true); observer.disconnect(); } },
-      { threshold: 0.1 }
-    );
-    if (sectionRef.current) observer.observe(sectionRef.current);
-    return () => observer.disconnect();
-  }, []);
 
   const openCommittee = (index: number) => {
     setCommitteeIndex(index);
@@ -37,19 +29,11 @@ export default function Services() {
 
   return (
     <>
-      {/* Transition overlay */}
-      <div className={`fixed inset-0 z-[300] pointer-events-none transition-all duration-500 ${transitioning ? 'opacity-100' : 'opacity-0'}`}>
-        <div className={`absolute inset-0 bg-amber-400 transition-all duration-500 ${transitioning ? 'translate-y-0' : '-translate-y-full'}`} style={{ transitionTimingFunction: 'cubic-bezier(0.76, 0, 0.24, 1)' }} />
-        <div className={`absolute inset-0 bg-amber-500 transition-all duration-500 delay-75 ${transitioning ? 'translate-y-0' : '-translate-y-full'}`} style={{ transitionTimingFunction: 'cubic-bezier(0.76, 0, 0.24, 1)' }} />
-        <div className={`absolute inset-0 flex items-center justify-center transition-all duration-300 delay-200 ${transitioning ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}>
-          <span className="text-black text-6xl font-black tracking-tighter">ENACTUS</span>
-        </div>
-      </div>
+      <TransitionOverlay active={transitioning} />
 
       {committeeOpen && <CommitteesPage initialIndex={committeeIndex} onClose={closeCommittee} />}
 
-      <section ref={sectionRef} className="relative w-full bg-black overflow-hidden">
-
+      <section ref={ref} className="relative w-full bg-black overflow-hidden">
         {/* Header */}
         <div className="container-custom section-padding pt-20 pb-12">
           <div className={`flex flex-col sm:flex-row sm:items-end justify-between gap-6 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
@@ -89,7 +73,6 @@ export default function Services() {
                   transition: `opacity 0.6s ease ${index * 40}ms, transform 0.6s ease ${index * 40}ms, padding 0.3s ease, background 0.3s ease`,
                 }}
               >
-                {/* Index + Name */}
                 <div className="flex items-center gap-4 sm:gap-8">
                   <span className="text-white/20 text-xs font-mono w-6 shrink-0">
                     {String(index + 1).padStart(2, '0')}
@@ -100,8 +83,6 @@ export default function Services() {
                     {committee.name}
                   </span>
                 </div>
-
-                {/* Tagline + Arrow */}
                 <div className="flex items-center gap-4 sm:gap-8">
                   <span className="hidden sm:block text-white/30 text-xs uppercase tracking-widest">
                     {committee.tagline}
@@ -129,7 +110,6 @@ export default function Services() {
             ))}
           </div>
         </div>
-
       </section>
     </>
   );

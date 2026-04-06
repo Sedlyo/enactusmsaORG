@@ -1,68 +1,51 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Trophy, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useContent } from '../context/ContentContext';
+import { useInView } from '../hooks/use-in-view';
+import { useSwipe } from '../hooks/use-swipe';
 
 export default function Team() {
   const { content } = useContent();
   const teamMembers = content.team;
-  const sectionRef = useRef<HTMLElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
+  const { ref, isVisible } = useInView(0.2);
   const [active, setActive] = useState(0);
   const [animating, setAnimating] = useState(false);
   const [direction, setDirection] = useState<'left' | 'right'>('right');
-  const touchStartX = useRef<number>(0);
-  const touchEndX = useRef<number>(0);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setIsVisible(true); observer.disconnect(); } },
-      { threshold: 0.2 }
-    );
-    if (sectionRef.current) observer.observe(sectionRef.current);
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const timer = setInterval(() => goTo((active + 1) % teamMembers.length, 'right'), 4000);
-    return () => clearInterval(timer);
-  }, [active, teamMembers.length]);
-
-  const goTo = (index: number, dir: 'left' | 'right') => {
+  const goTo = useCallback((index: number, dir: 'left' | 'right') => {
     if (animating) return;
     setDirection(dir);
     setAnimating(true);
     setTimeout(() => { setActive(index); setAnimating(false); }, 400);
-  };
+  }, [animating]);
+
+  useEffect(() => {
+    const timer = setInterval(() => goTo((active + 1) % teamMembers.length, 'right'), 4000);
+    return () => clearInterval(timer);
+  }, [active, teamMembers.length, goTo]);
 
   const prev = () => goTo((active - 1 + teamMembers.length) % teamMembers.length, 'left');
   const next = () => goTo((active + 1) % teamMembers.length, 'right');
 
-  const handleTouchStart = (e: React.TouchEvent) => { touchStartX.current = e.targetTouches[0].clientX; };
-  const handleTouchMove = (e: React.TouchEvent) => { touchEndX.current = e.targetTouches[0].clientX; };
-  const handleTouchEnd = () => {
-    const diff = touchStartX.current - touchEndX.current;
-    if (Math.abs(diff) > 50) { if (diff > 0) next(); else prev(); }
-  };
+  const swipeHandlers = useSwipe({ onSwipeLeft: next, onSwipeRight: prev });
 
   const current = teamMembers[active] ?? teamMembers[0];
   const slideOut = direction === 'right' ? '-translate-x-16' : 'translate-x-16';
 
   return (
-    <section ref={sectionRef} className="relative min-h-screen w-full bg-black py-20 overflow-hidden">
+    <section ref={ref} className="relative min-h-screen w-full bg-black py-20 overflow-hidden">
       <div className="container-custom section-padding">
         <div className="mb-16">
-  <div className={`transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-    <h2 className="text-5xl sm:text-6xl lg:text-8xl font-black text-white uppercase leading-none tracking-tighter">
-      OUR <span className="text-amber-400">TEAM</span>
-    </h2>
-  </div>
-</div>
+          <div className={`transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+            <h2 className="text-5xl sm:text-6xl lg:text-8xl font-black text-white uppercase leading-none tracking-tighter">
+              OUR <span className="text-amber-400">TEAM</span>
+            </h2>
+          </div>
+        </div>
 
         <div
           className={`mb-16 transition-all duration-1000 delay-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
+          {...swipeHandlers}
         >
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             <div className="relative aspect-[3/4] max-w-md mx-auto lg:mx-0 overflow-hidden rounded-2xl">

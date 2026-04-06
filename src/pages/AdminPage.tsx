@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useContent } from '../context/ContentContext';
+import { defaultContent } from '../context/ContentContext';
 import type { SiteContent, TeamMember, Committee } from '../context/ContentContext';
 import { LogOut, Save, RotateCcw, Eye, ChevronDown, ChevronUp, Upload } from 'lucide-react';
 
@@ -41,7 +42,7 @@ function ImageUploader({ value, onChange, label }: { value: string; onChange: (v
   );
 }
 
-function TextField({ label, value, onChange, multiline = false }: { label: string; value: string; onChange: (v: string) => void; multiline?: boolean }) {
+function TextField({ label, value, onChange, multiline = false, type = 'text' }: { label: string; value: string; onChange: (v: string) => void; multiline?: boolean; type?: string }) {
   return (
     <div className="flex flex-col gap-1">
       <label className="text-white/60 text-xs uppercase tracking-wider">{label}</label>
@@ -54,7 +55,7 @@ function TextField({ label, value, onChange, multiline = false }: { label: strin
         />
       ) : (
         <input
-          type="text"
+          type={type}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           className="px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-white placeholder-white/30 outline-none focus:border-amber-400/50 transition-colors"
@@ -98,18 +99,18 @@ export default function AdminPage() {
     }
   };
 
-  const handleSave = async () => {
-  await updateContent(draft);
-  setSaved(true);
-  setTimeout(() => setSaved(false), 3000);
-};
-  const handleReset = async () => {
-  if (confirm('Reset all content to defaults? This cannot be undone.')) {
-    await resetContent();
-    setDraft(content);
-  }
-};
+  const handleSave = () => {
+    updateContent(draft);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 3000);
+  };
 
+  const handleReset = () => {
+    if (confirm('Reset all content to defaults? This cannot be undone.')) {
+      resetContent();
+      setDraft(defaultContent);
+    }
+  };
 
   const updateDraft = (path: string[], value: unknown) => {
     setDraft((prev) => {
@@ -221,7 +222,6 @@ export default function AdminPage() {
 
       {/* Content */}
       <div className="max-w-4xl mx-auto px-6 py-10 flex flex-col gap-4">
-
         {/* Hero */}
         <SectionPanel title="Hero Section" defaultOpen>
           <TextField label="Subtitle (Enactus logo)" value={draft.hero.subtitle} onChange={(v) => updateDraft(['hero', 'subtitle'], v)} />
@@ -236,15 +236,15 @@ export default function AdminPage() {
           <TextField label="Paragraph 1" value={draft.about.paragraph1} onChange={(v) => updateDraft(['about', 'paragraph1'], v)} multiline />
           <TextField label="Paragraph 2" value={draft.about.paragraph2} onChange={(v) => updateDraft(['about', 'paragraph2'], v)} multiline />
           <TextField label="Paragraph 3" value={draft.about.paragraph3} onChange={(v) => updateDraft(['about', 'paragraph3'], v)} multiline />
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 gap-4">
             <TextField label="Stat 1 Value" value={draft.about.stat1Value} onChange={(v) => updateDraft(['about', 'stat1Value'], v)} />
             <TextField label="Stat 1 Label" value={draft.about.stat1Label} onChange={(v) => updateDraft(['about', 'stat1Label'], v)} />
           </div>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 gap-4">
             <TextField label="Stat 2 Value" value={draft.about.stat2Value} onChange={(v) => updateDraft(['about', 'stat2Value'], v)} />
             <TextField label="Stat 2 Label" value={draft.about.stat2Label} onChange={(v) => updateDraft(['about', 'stat2Label'], v)} />
           </div>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 gap-4">
             <TextField label="Stat 3 Value" value={draft.about.stat3Value} onChange={(v) => updateDraft(['about', 'stat3Value'], v)} />
             <TextField label="Stat 3 Label" value={draft.about.stat3Label} onChange={(v) => updateDraft(['about', 'stat3Label'], v)} />
           </div>
@@ -261,6 +261,54 @@ export default function AdminPage() {
                 }}
               />
             ))}
+          </div>
+        </SectionPanel>
+
+        {/* Stats */}
+        <SectionPanel title="Stats Section">
+          <TextField
+            label="Years of Experience"
+            value={String(draft.stats.yearsOfExperience)}
+            onChange={(v) => updateDraft(['stats', 'yearsOfExperience'], Number(v) || 0)}
+            type="number"
+          />
+          <TextField
+            label="Projects Completed"
+            value={String(draft.stats.projectsCompleted)}
+            onChange={(v) => updateDraft(['stats', 'projectsCompleted'], Number(v) || 0)}
+            type="number"
+          />
+        </SectionPanel>
+
+        {/* Board */}
+        <SectionPanel title="Board Section">
+          <TextField label="Description" value={draft.board.description} onChange={(v) => updateDraft(['board', 'description'], v)} multiline />
+          <div className="flex flex-col gap-3">
+            <label className="text-white/60 text-xs uppercase tracking-wider">Board Images</label>
+            {draft.board.images.map((img, i) => (
+              <div key={i} className="flex gap-2 items-center">
+                <ImageUploader label={`Image ${i + 1}`} value={img} onChange={(v) => {
+                  const updated = [...draft.board.images];
+                  updated[i] = v;
+                  setDraft({ ...draft, board: { ...draft.board, images: updated } });
+                }} />
+                <button
+                  onClick={() => {
+                    const updated = draft.board.images.filter((_, idx) => idx !== i);
+                    setDraft({ ...draft, board: { ...draft.board, images: updated } });
+                  }}
+                  className="text-red-400 hover:text-red-300 text-xs mt-4"
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+            <button
+              onClick={() => setDraft({ ...draft, board: { ...draft.board, images: [...draft.board.images, ''] } })}
+              className="px-4 py-2 border border-dashed border-amber-400/40 rounded-xl text-amber-400 text-sm hover:border-amber-400 transition-colors"
+            >
+              + Add Board Image
+            </button>
           </div>
         </SectionPanel>
 

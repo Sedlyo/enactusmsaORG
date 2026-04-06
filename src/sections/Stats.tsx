@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
+import { useContent } from '../context/ContentContext';
+import { useInView } from '../hooks/use-in-view';
 
 interface CounterProps {
   end: number;
@@ -30,11 +32,7 @@ function Counter({ end, duration = 2000, suffix = '' }: CounterProps) {
       },
       { threshold: 0.5 }
     );
-
-    if (countRef.current) {
-      observer.observe(countRef.current);
-    }
-
+    if (countRef.current) observer.observe(countRef.current);
     return () => observer.disconnect();
   }, [end, duration, hasAnimated]);
 
@@ -47,30 +45,13 @@ function Counter({ end, duration = 2000, suffix = '' }: CounterProps) {
 }
 
 export default function Stats() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.3 }
-    );
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
+  const { content } = useContent();
+  const { stats } = content;
+  const { ref, isVisible } = useInView(0.3);
 
   return (
     <section
-      ref={sectionRef}
+      ref={ref}
       className="relative min-h-[60vh] w-full bg-black py-20 overflow-hidden"
     >
       <div className="container-custom section-padding">
@@ -83,16 +64,12 @@ export default function Stats() {
           >
             <div className="relative">
               <span className="text-[15vw] lg:text-[12vw] font-black text-white leading-none">
-                <Counter end={0} />
+                <Counter end={stats.yearsOfExperience} />
               </span>
             </div>
             <div className="mt-4">
-              <p className="text-white/60 text-lg uppercase tracking-wider">
-                Years of
-              </p>
-              <p className="text-white text-2xl font-semibold uppercase tracking-wider">
-                experience
-              </p>
+              <p className="text-white/60 text-lg uppercase tracking-wider">Years of</p>
+              <p className="text-white text-2xl font-semibold uppercase tracking-wider">experience</p>
             </div>
           </div>
 
@@ -107,7 +84,7 @@ export default function Stats() {
           >
             <div className="relative">
               <span className="text-4xl lg:text-5xl font-bold text-white/60 uppercase tracking-wider">
-                Over <Counter end={0} /> Projects completed
+                Over <Counter end={stats.projectsCompleted} /> Projects completed
               </span>
             </div>
           </div>

@@ -17,33 +17,6 @@ module.exports = {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
         },
-        theme: {
-  extend: {
-    animation: {
-      marquee: "marquee 20s linear infinite",
-    },
-    keyframes: {
-      marquee: {
-        "0%": { transform: "translateX(0%)" },
-        "100%": { transform: "translateX(-50%)" },
-      },
-    },
-  },
-}, 
-keyframes: {
-  marquee: {
-    '0%': { transform: 'translateX(0%)' },
-    '100%': { transform: 'translateX(-50%)' },
-  },
-  'marquee-reverse': {
-    '0%': { transform: 'translateX(-50%)' },
-    '100%': { transform: 'translateX(0%)' },
-  },
-},
-animation: {
-  marquee: 'marquee 20s linear infinite',
-  'marquee-reverse': 'marquee-reverse 20s linear infinite',
-}, 
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
@@ -94,7 +67,7 @@ animation: {
           "0%,70%,100%": { opacity: "1" },
           "20%,50%": { opacity: "0" },
         },
-        "float": {
+        float: {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-20px)" },
         },
@@ -118,9 +91,13 @@ animation: {
           from: { opacity: "0", transform: "scale(0.9)" },
           to: { opacity: "1", transform: "scale(1)" },
         },
-        "marquee": {
+        marquee: {
           "0%": { transform: "translateX(0)" },
           "100%": { transform: "translateX(-50%)" },
+        },
+        "marquee-reverse": {
+          "0%": { transform: "translateX(-50%)" },
+          "100%": { transform: "translateX(0%)" },
         },
         "spin-slow": {
           from: { transform: "rotate(0deg)" },
@@ -131,13 +108,14 @@ animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "caret-blink": "caret-blink 1.25s ease-out infinite",
-        "float": "float 6s ease-in-out infinite",
+        float: "float 6s ease-in-out infinite",
         "pulse-glow": "pulse-glow 3s ease-in-out infinite",
         "slide-up": "slide-up 0.8s ease-out forwards",
         "slide-in-right": "slide-in-right 0.8s ease-out forwards",
         "fade-in": "fade-in 0.6s ease-out forwards",
         "scale-in": "scale-in 0.5s ease-out forwards",
-        "marquee": "marquee 20s linear infinite",
+        marquee: "marquee 20s linear infinite",
+        "marquee-reverse": "marquee-reverse 20s linear infinite",
         "spin-slow": "spin-slow 20s linear infinite",
       },
     },

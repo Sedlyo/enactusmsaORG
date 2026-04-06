@@ -1,44 +1,34 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useContent } from '../context/ContentContext';
+import { useInView } from '../hooks/use-in-view';
 
 export default function About() {
   const { content } = useContent();
   const { about } = content;
-  const sectionRef = useRef<HTMLElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
+  const { ref, isVisible } = useInView(0.2);
   const [displayed, setDisplayed] = useState('');
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setIsVisible(true); observer.disconnect(); } },
-      { threshold: 0.2 }
-    );
-    if (sectionRef.current) observer.observe(sectionRef.current);
-    return () => observer.disconnect();
-  }, []);
 
   useEffect(() => {
     if (!isVisible) return;
     setDisplayed('');
     let i = 0;
-    const fullText = about.title;
+    const fullText = about.heading;
     const timer = setInterval(() => {
       setDisplayed(fullText.slice(0, i + 1));
       i++;
       if (i === fullText.length) clearInterval(timer);
     }, 100);
     return () => clearInterval(timer);
-  }, [isVisible, about.title]);
+  }, [isVisible, about.heading]);
 
   return (
-    <section ref={sectionRef} className="relative min-h-screen w-full bg-black py-20 overflow-hidden">
+    <section ref={ref} className="relative min-h-screen w-full bg-black py-20 overflow-hidden">
       <div className="container-custom section-padding">
-       {/* Heading */}
-<div className={`mb-12 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10'}`}>
-  <h2 className="text-5xl sm:text-6xl lg:text-8xl font-black text-white uppercase leading-none tracking-tighter text-center">
-    ABOUT <span className="text-amber-400">US</span>
-  </h2>
-</div>
+        <div className={`mb-12 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10'}`}>
+          <h2 className="text-5xl sm:text-6xl lg:text-8xl font-black text-white uppercase leading-none tracking-tighter text-center">
+            ABOUT <span className="text-amber-400">US</span>
+          </h2>
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Images */}
