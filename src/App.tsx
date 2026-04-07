@@ -1,49 +1,41 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Navigation from './components/Navigation';
-import Hero from './sections/Hero';
-import About from './sections/About';
-import Stats from './sections/Stats';
-import Board from './sections/Board';
-import Services from './sections/Services';
-import Sponsors from './sections/Sponsors';
-import Team from './sections/Team';
-import GetInTouch from './sections/GetInTouch';
-import Contact from './sections/Contact';
-import Footer from './sections/Footer';
-import AdminPage from './pages/AdminPage';
-import { ContentProvider } from './context/ContentContext';
-import './App.css';
+import { AuthProvider } from '@/context/AuthContext';
+import { ContentProvider } from '@/context/ContentContext';
+import RequireAuth from '@/components/RequireAuth';
+import LandingPage from '@/pages/LandingPage';
 
-function LandingPage() {
-  return (
-    <div className="min-h-screen bg-black text-white overflow-x-hidden">
-      <Navigation />
-      <main>
-        <section id="home"><Hero /></section>
-        <section id="about"><About /></section>
-        <section id="stats"><Stats /></section>
-        <section id="board"><Board /></section>
-        <section id="services"><Services /></section>
-        <section id="sponsors"><Sponsors /></section>
-        <section id="team"><Team /></section>
-        <section id="getintouch"><GetInTouch /></section>
-        <section id="contact"><Contact /></section>
-      </main>
-      <Footer />
-    </div>
-  );
-}
+const LoginPage = lazy(() => import('@/pages/LoginPage'));
+const AdminLayout = lazy(() => import('@/pages/admin/AdminLayout'));
+
+const Loading = () => (
+  <div className="min-h-screen bg-black flex items-center justify-center">
+    <div className="w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
+  </div>
+);
 
 function App() {
   return (
-    <ContentProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/admin" element={<AdminPage />} />
-        </Routes>
-      </BrowserRouter>
-    </ContentProvider>
+    <AuthProvider>
+      <ContentProvider>
+        <BrowserRouter>
+          <Suspense fallback={<Loading />}>
+            <Routes>
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route
+                path="/admin/*"
+                element={
+                  <RequireAuth>
+                    <AdminLayout />
+                  </RequireAuth>
+                }
+              />
+            </Routes>
+          </Suspense>
+        </BrowserRouter>
+      </ContentProvider>
+    </AuthProvider>
   );
 }
 

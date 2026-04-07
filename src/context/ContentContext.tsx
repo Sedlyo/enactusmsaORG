@@ -1,5 +1,7 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+/* eslint-disable react-refresh/only-export-components */
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import type { ReactNode } from 'react';
+import { fetchSiteContent } from '@/lib/firestore';
 
 export interface TeamMember {
   id: number;
@@ -13,6 +15,7 @@ export interface Committee {
   name: string;
   description: string;
   tagline: string;
+  image: string;
 }
 
 export interface SiteContent {
@@ -57,9 +60,14 @@ export interface SiteContent {
     phone: string;
     address: string;
   };
+  settings: {
+    siteName: string;
+    logo: string;
+    favicon: string;
+  };
 }
 
-export const defaultContent: SiteContent = {
+export const siteContent: SiteContent = {
   hero: {
     subtitle: 'Enactus: Where purpose and creativity meet.',
     enactusLogo: '/assets/EnactusLOGO.png',
@@ -98,20 +106,20 @@ export const defaultContent: SiteContent = {
       'Our dedicated board members lead the team with passion and vision, driving impactful projects and fostering a culture of innovation and social responsibility.',
   },
   committees: [
-    { name: 'PR & FR', tagline: "IT'S A MARATHON NOT A SPRINT", description: '...' },
-    { name: 'Logistics', tagline: "IT'S A MARATHON NOT A SPRINT", description: '...' },
-    { name: 'Human Resources', tagline: "IT'S A MARATHON NOT A SPRINT", description: '...' },
-    { name: 'Project Management', tagline: "IT'S A MARATHON NOT A SPRINT", description: '...' },
-    { name: 'Visuals', tagline: "IT'S A MARATHON NOT A SPRINT", description: '...' },
-    { name: 'Presentation', tagline: "IT'S A MARATHON NOT A SPRINT", description: '...' },
-    { name: 'R&D', tagline: "IT'S A MARATHON NOT A SPRINT", description: '...' },
-    { name: 'Marketing', tagline: "IT'S A MARATHON NOT A SPRINT", description: '...' },
-    { name: 'Operations', tagline: "IT'S A MARATHON NOT A SPRINT", description: '...' },
+    { name: 'PR & FR', tagline: "IT'S A MARATHON NOT A SPRINT", description: '...', image: '/assets/placeholder.png' },
+    { name: 'Logistics', tagline: "IT'S A MARATHON NOT A SPRINT", description: '...', image: '/assets/placeholder.png' },
+    { name: 'Human Resources', tagline: "IT'S A MARATHON NOT A SPRINT", description: '...', image: '/assets/placeholder.png' },
+    { name: 'Project Management', tagline: "IT'S A MARATHON NOT A SPRINT", description: '...', image: '/assets/placeholder.png' },
+    { name: 'Visuals', tagline: "IT'S A MARATHON NOT A SPRINT", description: '...', image: '/assets/placeholder.png' },
+    { name: 'Presentation', tagline: "IT'S A MARATHON NOT A SPRINT", description: '...', image: '/assets/placeholder.png' },
+    { name: 'R&D', tagline: "IT'S A MARATHON NOT A SPRINT", description: '...', image: '/assets/placeholder.png' },
+    { name: 'Marketing', tagline: "IT'S A MARATHON NOT A SPRINT", description: '...', image: '/assets/placeholder.png' },
+    { name: 'Operations', tagline: "IT'S A MARATHON NOT A SPRINT", description: '...', image: '/assets/placeholder.png' },
   ],
   team: [
     { id: 1, name: 'Ahmed Bahi', role: 'CLUB PRESIDENT', image: '/assets/placeholder.png', achievement: 'Placeholder Achievement' },
-    { id: 2, name: 'null', role: 'VICE PRESIDENT', image: '/assets/placeholder.png?v=2', achievement: 'Placeholder Achievement' },
-    { id: 3, name: 'null', role: 'PROJECT MANAGER', image: '/assets/placeholder.png?v=3', achievement: 'Placeholder Achievement' },
+    { id: 2, name: 'TBD', role: 'VICE PRESIDENT', image: '/assets/placeholder.png?v=2', achievement: 'Placeholder Achievement' },
+    { id: 3, name: 'TBD', role: 'PROJECT MANAGER', image: '/assets/placeholder.png?v=3', achievement: 'Placeholder Achievement' },
   ],
   sponsors: {
     title: 'OUR SPONSORS',
@@ -129,68 +137,69 @@ export const defaultContent: SiteContent = {
     phone: '',
     address: 'MSA University, Cairo, Egypt',
   },
+  settings: {
+    siteName: 'Enactus MSA',
+    logo: '/assets/enactusMSA2.png',
+    favicon: '',
+  },
 };
 
-const STORAGE_KEY = 'enactus-msa-content';
-
-function loadContent(): SiteContent {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      // Merge with defaults to handle any new fields added after save
-      return { ...defaultContent, ...parsed };
-    }
-  } catch {
-    // Corrupted data — fall back to defaults
-  }
-  return defaultContent;
-}
-
-function saveContent(content: SiteContent) {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(content));
-  } catch {
-    // Storage full or unavailable
-  }
-}
-
-interface ContentContextType {
+interface ContentState {
   content: SiteContent;
-  updateContent: (newContent: SiteContent) => void;
-  resetContent: () => void;
   loading: boolean;
+  refreshContent: () => Promise<void>;
 }
 
-const ContentContext = createContext<ContentContextType | null>(null);
+const ContentContext = createContext<ContentState>({
+  content: siteContent,
+  loading: true,
+  refreshContent: async () => {},
+});
 
 export function ContentProvider({ children }: { children: ReactNode }) {
-  const [content, setContent] = useState<SiteContent>(loadContent);
-  const [loading] = useState(false);
+  const [content, setContent] = useState<SiteContent>(siteContent);
+  const [loading, setLoading] = useState(true);
 
-  // Persist whenever content changes
+  const refreshContent = useCallback(async () => {
+    try {
+      const data = await fetchSiteContent();
+      setContent(data);
+    } catch (err) {
+      console.error('Failed to fetch content from Firestore:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
-    saveContent(content);
-  }, [content]);
+    refreshContent();
+  }, [refreshContent]);
 
-  const updateContent = (newContent: SiteContent) => {
-    setContent(newContent);
-  };
+  // Apply site name + favicon dynamically
+  useEffect(() => {
+    document.title = content.settings.siteName || 'Enactus MSA';
 
-  const resetContent = () => {
-    setContent(defaultContent);
-    localStorage.removeItem(STORAGE_KEY);
-  };
+    const link =
+      document.querySelector<HTMLLinkElement>("link[rel='icon']") ||
+      document.createElement('link');
+    link.rel = 'icon';
+    if (content.settings.favicon) {
+      link.href = content.settings.favicon;
+      if (!link.parentElement) document.head.appendChild(link);
+    }
+  }, [content.settings.siteName, content.settings.favicon]);
 
   return (
-    <ContentContext.Provider value={{ content, updateContent, resetContent, loading }}>
+    <ContentContext.Provider value={{ content, loading, refreshContent }}>
       {children}
     </ContentContext.Provider>
   );
 }
 
 export function useContent() {
-  const ctx = useContext(ContentContext);
-  if (!ctx) throw new Error('useContent must be used within ContentProvider');
-  return ctx;
+  return useContext(ContentContext).content;
+}
+
+export function useContentState() {
+  return useContext(ContentContext);
 }

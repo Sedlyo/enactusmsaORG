@@ -45,7 +45,7 @@ function Counter({ end, duration = 2000, suffix = '' }: CounterProps) {
 }
 
 export default function Stats() {
-  const { content } = useContent();
+  const content = useContent();
   const { stats } = content;
   const { ref, isVisible } = useInView(0.3);
 

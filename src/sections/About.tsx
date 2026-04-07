@@ -3,7 +3,7 @@ import { useContent } from '../context/ContentContext';
 import { useInView } from '../hooks/use-in-view';
 
 export default function About() {
-  const { content } = useContent();
+  const content = useContent();
   const { about } = content;
   const { ref, isVisible } = useInView(0.2);
   const [displayed, setDisplayed] = useState('');

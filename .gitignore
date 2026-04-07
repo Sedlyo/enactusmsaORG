@@ -15,6 +15,9 @@ yarn-error.log*
 .env.local
 .env.*.local
 
+# Uploaded images
+public/assets/uploads/
+
 # OS files
 .DS_Store
 Thumbs.db

@@ -5,7 +5,7 @@ import { useInView } from '../hooks/use-in-view';
 import { useSwipe } from '../hooks/use-swipe';
 
 export default function Board() {
-  const { content } = useContent();
+  const content = useContent();
   const boardImages = content.board.images;
   const { ref, isVisible } = useInView(0.2);
   const [activeImage, setActiveImage] = useState(0);

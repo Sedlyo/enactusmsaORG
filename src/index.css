@@ -5,19 +5,11 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
-  }
-}
-
-@layer base {
-  * {
-    @apply border-border;
-  }
   html {
     scroll-behavior: smooth;
   }
   body {
-    @apply bg-black text-white font-sans antialiased;
+    @apply bg-black text-white antialiased;
     font-family: 'Inter', sans-serif;
   }
 }
@@ -40,46 +32,6 @@
   background: #f4d211;
 }
 
-/* Text stroke effect */
-.text-stroke {
-  -webkit-text-stroke: 2px white;
-  -webkit-text-fill-color: transparent;
-}
-
-.text-stroke-thin {
-  -webkit-text-stroke: 1px white;
-  -webkit-text-fill-color: transparent;
-}
-
-/* Vertical text */
-.vertical-text {
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-}
-
-/* Gradient text */
-.gradient-text {
-  background: linear-gradient(135deg, #fff 0%, #888 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* Glow effects */
-.glow-white {
-  text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
-}
-
-/* Hover lift effect */
-.hover-lift {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.hover-lift:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 40px rgba(255, 255, 255, 0.1);
-}
-
 /* Image hover zoom */
 .img-zoom {
   overflow: hidden;
@@ -91,42 +43,6 @@
 
 .img-zoom:hover img {
   transform: scale(1.05);
-}
-
-/* Border gradient */
-.border-gradient {
-  position: relative;
-}
-
-.border-gradient::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  padding: 1px;
-  background: linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0.05));
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  border-radius: inherit;
-  pointer-events: none;
-}
-
-/* Glass effect */
-.glass {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* Noise texture overlay */
-.noise-overlay::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-  opacity: 0.03;
-  pointer-events: none;
 }
 
 /* Section padding */

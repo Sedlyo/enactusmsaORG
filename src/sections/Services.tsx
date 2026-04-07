@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useContent } from '../context/ContentContext';
 import { useInView } from '../hooks/use-in-view';
-import CommitteesPage from './CommitteesPage';
+import CommitteesPage from '../components/CommitteesPage';
 import TransitionOverlay from '../components/TransitionOverlay';
 import { ArrowUpRight } from 'lucide-react';
 
 export default function Services() {
-  const { content } = useContent();
+  const content = useContent();
   const { committees } = content;
   const { ref, isVisible } = useInView(0.1);
   const [committeeOpen, setCommitteeOpen] = useState(false);

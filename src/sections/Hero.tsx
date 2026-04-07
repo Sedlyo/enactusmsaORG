@@ -4,7 +4,7 @@ import { useContent } from '../context/ContentContext';
 import TikTokIcon from '../components/TikTokIcon';
 
 export default function Hero() {
-  const { content } = useContent();
+  const content = useContent();
   const { hero } = content;
   const [logoIndex, setLogoIndex] = useState(0);
 

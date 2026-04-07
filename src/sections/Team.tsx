@@ -5,7 +5,7 @@ import { useInView } from '../hooks/use-in-view';
 import { useSwipe } from '../hooks/use-swipe';
 
 export default function Team() {
-  const { content } = useContent();
+  const content = useContent();
   const teamMembers = content.team;
   const { ref, isVisible } = useInView(0.2);
   const [active, setActive] = useState(0);

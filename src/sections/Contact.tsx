@@ -3,7 +3,7 @@ import { useContent } from '../context/ContentContext';
 import { useInView } from '../hooks/use-in-view';
 
 export default function Contact() {
-  const { content } = useContent();
+  const content = useContent();
   const { contact } = content;
   const { ref, isVisible } = useInView(0.2);
 
