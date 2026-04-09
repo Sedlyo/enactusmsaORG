@@ -35,7 +35,7 @@ function uploadPlugin(): Plugin {
   return {
     name: "upload-api",
     configureServer(server) {
-      server.middlewares.use("/api/upload", (req, res, next) => {
+      server.middlewares.use("/api/upload.php", (req, res, next) => {
         if (req.method === "POST") {
           upload.single("image")(req as any, res as any, (err: any) => {
             if (err) return res.writeHead(400).end(JSON.stringify({ error: err.message }));
