@@ -21,3 +21,9 @@ public/assets/uploads/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Agent skills & tooling
+.agents/
+skills/
+skills-lock.json
+
