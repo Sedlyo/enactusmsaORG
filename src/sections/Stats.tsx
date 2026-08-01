@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useContent } from '../context/ContentContext';
 import { useInView } from '../hooks/use-in-view';
+import { TrendingUp, Target } from 'lucide-react';
 
 interface CounterProps {
   end: number;
@@ -57,7 +58,7 @@ export default function Stats() {
       className="relative w-full bg-black py-24 overflow-hidden border-t border-white/5"
     >
       {/* Background Lighting */}
-      <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-80 h-80 bg-amber-400/5 blur-[100px] rounded-full pointer-events-none" />
+      <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-96 h-96 bg-amber-400/10 blur-[130px] rounded-full pointer-events-none" />
 
       <div className="container-custom section-padding relative z-10">
         <div className="grid gap-12 xl:grid-cols-[1.4fr_1fr] items-center">
@@ -68,35 +69,44 @@ export default function Stats() {
             <h2 className="text-5xl sm:text-6xl lg:text-7xl font-black text-white uppercase leading-tight tracking-tighter">
               Impact <span className="text-amber-400">In Numbers</span>
             </h2>
-            <p className="mt-6 max-w-xl text-white/55 text-base sm:text-lg leading-relaxed">
+            <p className="mt-6 max-w-xl text-white/60 text-base sm:text-lg leading-relaxed font-light">
               Enactus MSA combines ambitious ideas with structured teamwork to deliver meaningful projects, leadership experience, and long-term community results.
             </p>
           </div>
 
-          {/* Right stat cards — consistent visual language */}
-          <div className="grid gap-4">
-            <div className={`border-l-2 border-amber-400 bg-white/[0.02] rounded-2xl p-8 sm:p-10 transition-all duration-1000 hover:bg-white/[0.04] ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-              <p className="text-[11px] uppercase font-bold tracking-[0.25em] text-white/40 mb-4">Years of Experience</p>
+          {/* Right stat cards */}
+          <div className="grid gap-6">
+            <div className={`group border-l-4 border-amber-400 bg-white/[0.03] backdrop-blur-xl rounded-3xl p-8 sm:p-10 transition-all duration-500 hover:bg-white/[0.06] hover:border-amber-300 hover:shadow-[0_15px_40px_rgba(251,191,36,0.12)] ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+              <div className="flex items-center justify-between mb-4">
+                <p className="text-[11px] uppercase font-bold tracking-[0.25em] text-amber-400 flex items-center gap-2">
+                  <TrendingUp size={16} /> Years of Experience
+                </p>
+                <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
+              </div>
               <div className="flex items-end gap-3">
-                <span className="text-6xl sm:text-7xl font-black text-white leading-none">
+                <span className="text-6xl sm:text-7xl font-black text-white leading-none tracking-tight">
                   <Counter end={stats.yearsOfExperience} />
                 </span>
-                <span className="text-base font-bold text-amber-400 uppercase tracking-widest mb-2">yrs</span>
+                <span className="text-lg font-bold text-amber-400 uppercase tracking-widest mb-2">Years</span>
               </div>
-              <p className="mt-4 text-white/50 text-sm leading-relaxed">
-                Equipping students with hands-on leadership, professional development, and real project management.
+              <p className="mt-4 text-white/60 text-sm leading-relaxed font-light">
+                Equipping students with hands-on leadership, professional development, and real project management experience.
               </p>
             </div>
 
-            <div className={`border-l-2 border-amber-400/50 bg-white/[0.02] rounded-2xl p-8 sm:p-10 transition-all duration-1000 delay-150 hover:bg-white/[0.04] ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-              <p className="text-[11px] uppercase font-bold tracking-[0.25em] text-white/40 mb-4">Projects Completed</p>
+            <div className={`group border-l-4 border-amber-400/60 bg-white/[0.03] backdrop-blur-xl rounded-3xl p-8 sm:p-10 transition-all duration-500 delay-150 hover:bg-white/[0.06] hover:border-amber-400 hover:shadow-[0_15px_40px_rgba(251,191,36,0.12)] ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+              <div className="flex items-center justify-between mb-4">
+                <p className="text-[11px] uppercase font-bold tracking-[0.25em] text-amber-400 flex items-center gap-2">
+                  <Target size={16} /> Projects Completed
+                </p>
+              </div>
               <div className="flex items-end gap-3">
-                <span className="text-6xl sm:text-7xl font-black text-amber-400 leading-none">
+                <span className="text-6xl sm:text-7xl font-black text-amber-400 leading-none tracking-tight">
                   <Counter end={stats.projectsCompleted} />
                 </span>
-                <span className="text-base font-bold text-white/50 uppercase tracking-widest mb-2">initiatives</span>
+                <span className="text-lg font-bold text-white/70 uppercase tracking-widest mb-2">Initiatives</span>
               </div>
-              <p className="mt-4 text-white/50 text-sm leading-relaxed">
+              <p className="mt-4 text-white/60 text-sm leading-relaxed font-light">
                 Well-structured projects that build community value, social innovation, and stakeholder trust.
               </p>
             </div>

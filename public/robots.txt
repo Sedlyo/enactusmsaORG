@@ -4,4 +4,4 @@ Allow: /
 Disallow: /admin/
 Disallow: /login
 
-Sitemap: https://enactusmsa.org/sitemap.xml
+Sitemap: https://enactusmsa.com/sitemap.xml

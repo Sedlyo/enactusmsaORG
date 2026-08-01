@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,300..900;1,300..900&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -7,16 +7,21 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
   }
   body {
-    @apply bg-black text-white antialiased;
+    @apply bg-black text-white antialiased selection:bg-amber-400 selection:text-black overflow-x-hidden;
     font-family: 'Inter', sans-serif;
   }
 }
 
+.font-urbanist {
+  font-family: 'Urbanist', sans-serif;
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -32,6 +37,56 @@
   background: #f4d211;
 }
 
+/* Keyframe Animations */
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(1deg); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.35; transform: scale(1); }
+  50% { opacity: 0.65; transform: scale(1.06); }
+}
+
+@keyframes shineSweep {
+  0% { transform: translateX(-100%) rotate(45deg); }
+  100% { transform: translateX(200%) rotate(45deg); }
+}
+
+.animate-float-slow {
+  animation: floatSlow 6s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 4s ease-in-out infinite;
+}
+
+.shine-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.shine-effect::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    60deg,
+    transparent 30%,
+    rgba(251, 191, 36, 0.18) 50%,
+    transparent 70%
+  );
+  transform: translateX(-100%) rotate(45deg);
+  transition: transform 0.8s ease;
+}
+
+.shine-effect:hover::after {
+  transform: translateX(100%) rotate(45deg);
+}
+
 /* Image hover zoom */
 .img-zoom {
   overflow: hidden;
@@ -45,32 +100,33 @@
   transform: scale(1.05);
 }
 
-/* Section padding */
+/* Mobile-optimized Section Padding */
 .section-padding {
-  @apply px-4 sm:px-6 lg:px-8 xl:px-16 2xl:px-24;
+  @apply px-4 sm:px-6 md:px-10 lg:px-16 xl:px-24;
 }
 
 /* Container */
 .container-custom {
-  @apply max-w-[1800px] mx-auto;
+  @apply max-w-[1800px] mx-auto w-full;
 }
 
 .button-primary {
-  @apply inline-flex items-center justify-center px-8 py-3 rounded-full bg-amber-400 text-black font-bold uppercase tracking-widest transition-all duration-300 shadow-[0_24px_100px_rgba(251,191,36,0.18)] hover:bg-amber-300;
+  @apply inline-flex items-center justify-center px-7 py-3.5 sm:px-8 rounded-full bg-amber-400 text-black font-bold uppercase tracking-widest transition-all duration-300 shadow-[0_10px_30px_rgba(251,191,36,0.25)] hover:bg-amber-300 hover:shadow-[0_15px_40px_rgba(251,191,36,0.4)] hover:scale-105 active:scale-95 text-xs sm:text-sm font-urbanist;
 }
 
 .button-secondary {
-  @apply inline-flex items-center justify-center px-6 py-3 rounded-full bg-white/5 text-white font-semibold uppercase tracking-widest transition-all duration-300 border border-white/10 hover:bg-white/10;
+  @apply inline-flex items-center justify-center px-6 py-3.5 rounded-full bg-white/5 text-white font-semibold uppercase tracking-widest transition-all duration-300 border border-white/10 hover:bg-white/10 hover:border-amber-400/40 hover:text-amber-400 hover:scale-105 active:scale-95 text-xs sm:text-sm font-urbanist;
 }
 
 /* Consistent amber eyebrow label above section headings */
 .section-eyebrow {
-  @apply text-amber-400 text-[11px] font-bold uppercase tracking-[0.3em];
+  @apply text-amber-400 text-[11px] sm:text-xs font-bold uppercase tracking-[0.3em] font-urbanist;
 }
 
 .hero-button-group {
-  @apply mt-8 flex justify-center;
+  @apply mt-6 sm:mt-8 flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 w-full sm:w-auto;
 }
+
 .silent-hide {
   visibility: hidden;
   transition-delay: 0s, 700ms;

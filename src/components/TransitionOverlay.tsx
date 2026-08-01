@@ -23,19 +23,18 @@ export default function TransitionOverlay({ active }: Props) {
         }`}
         style={{ transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)' }}
       />
-      {/* Brand logo / text overlay */}
+      {/* Centered Large Brand Logo */}
       <div
-        className={`absolute inset-0 flex items-center justify-center transition-all duration-300 delay-150 ${
-          active ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+        className={`absolute inset-0 flex items-center justify-center transition-all duration-400 delay-150 ${
+          active ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
         }`}
       >
-        <div className="flex flex-col items-center gap-3">
-          <img src="/assets/enactusMSA2.png" alt="Enactus MSA" className="h-16 sm:h-24 w-auto brightness-0" />
-          <span className="text-black text-3xl sm:text-5xl font-black tracking-tighter uppercase">
-            ENACTUS MSA
-          </span>
-        </div>
+        <img
+          src="/assets/enactusMSA2.png"
+          alt="Enactus MSA"
+          className="h-28 sm:h-40 md:h-48 max-w-[85vw] w-auto object-contain brightness-0 drop-shadow-2xl"
+        />
       </div>
     </div>
   );
-}
+}

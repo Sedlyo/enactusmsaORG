@@ -13,18 +13,23 @@ export default function CommitteesPage({ initialIndex = 0, onClose }: Props) {
   const committees = content.committees;
 
   const [active, setActive] = useState(initialIndex);
+  const [isVisible, setIsVisible] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   useEffect(() => {
     setActive(initialIndex);
+    // Trigger smooth fade/slide-up entrance
+    const timer = setTimeout(() => setIsVisible(true), 20);
+    return () => clearTimeout(timer);
   }, [initialIndex]);
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') handleClose();
       if (e.key === 'ArrowLeft') prev();
       if (e.key === 'ArrowRight') next();
     };
@@ -47,6 +52,15 @@ export default function CommitteesPage({ initialIndex = 0, onClose }: Props) {
     }
   }, [active]);
 
+  const handleClose = () => {
+    if (isClosing) return;
+    setIsClosing(true);
+    setIsVisible(false);
+    setTimeout(() => {
+      onClose();
+    }, 350);
+  };
+
   const prev = () => setActive((i) => (i - 1 + committees.length) % committees.length);
   const next = () => setActive((i) => (i + 1) % committees.length);
 
@@ -54,23 +68,28 @@ export default function CommitteesPage({ initialIndex = 0, onClose }: Props) {
   const current = committees[active] ?? committees[0];
 
   return (
-    <div className="fixed inset-0 z-[200] bg-black flex flex-col animate-in fade-in duration-300">
-      
+    <div
+      className={`fixed inset-0 z-[200] bg-black flex flex-col font-urbanist transition-all duration-500 ease-out ${
+        isVisible && !isClosing
+          ? 'opacity-100 translate-y-0 scale-100'
+          : 'opacity-0 translate-y-6 scale-98 pointer-events-none'
+      }`}
+    >
       {/* Close button */}
       <button
-        onClick={onClose}
+        onClick={handleClose}
         aria-label="Close modal"
-        className="absolute top-4 right-4 md:top-6 md:right-6 z-20 w-11 h-11 rounded-full bg-black/60 backdrop-blur-md border border-white/20 flex items-center justify-center text-white/70 hover:text-amber-400 hover:border-amber-400 transition-all duration-300"
+        className="absolute top-4 right-4 md:top-6 md:right-6 z-30 w-11 h-11 rounded-full bg-black/60 backdrop-blur-md border border-white/20 flex items-center justify-center text-white/70 hover:text-amber-400 hover:border-amber-400 hover:scale-110 transition-all duration-300"
       >
         <X size={22} />
       </button>
 
       {/* Logo watermark */}
-      <div className="absolute top-4 left-4 md:top-6 md:left-6 z-20">
+      <div className="absolute top-4 left-4 md:top-6 md:left-6 z-30">
         <img
           src="/assets/enactusMSA2.png"
           alt="Enactus MSA"
-          className="h-12 md:h-16 w-auto object-contain drop-shadow-[0_0_12px_rgba(251,191,36,0.3)]"
+          className="h-10 md:h-16 w-auto object-contain drop-shadow-[0_0_12px_rgba(251,191,36,0.3)]"
         />
       </div>
 
@@ -87,15 +106,15 @@ export default function CommitteesPage({ initialIndex = 0, onClose }: Props) {
 
         {/* Content detail overlay */}
         <div className="relative z-10 p-6 md:p-16 max-w-4xl w-full pb-10">
-          <p className="text-amber-400 text-xs md:text-sm font-bold tracking-[0.3em] uppercase mb-3">
+          <p className="text-amber-400 text-xs md:text-sm font-extrabold tracking-[0.3em] uppercase mb-2">
             {current.tagline}
           </p>
 
-          <h2 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black text-white uppercase tracking-tight mb-4 break-words">
+          <h2 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black text-white uppercase tracking-tight mb-4 break-words font-urbanist">
             {current.name}
           </h2>
 
-          <p className="text-white/80 text-base md:text-lg lg:text-xl leading-relaxed max-w-2xl bg-black/40 backdrop-blur-md p-4 sm:p-6 rounded-2xl border border-white/10">
+          <p className="text-white/80 text-base md:text-lg lg:text-xl leading-relaxed max-w-2xl bg-black/40 backdrop-blur-md p-4 sm:p-6 rounded-2xl border border-white/10 font-sans font-light">
             {current.description}
           </p>
         </div>
@@ -104,24 +123,24 @@ export default function CommitteesPage({ initialIndex = 0, onClose }: Props) {
         <button
           onClick={prev}
           aria-label="Previous committee"
-          className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-black/60 backdrop-blur-md border border-white/20 flex items-center justify-center text-white/70 hover:text-amber-400 hover:border-amber-400 transition-all duration-300"
+          className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/60 backdrop-blur-md border border-white/20 flex items-center justify-center text-white/70 hover:text-amber-400 hover:border-amber-400 hover:scale-110 transition-all duration-300"
         >
-          <ChevronLeft size={28} />
+          <ChevronLeft size={24} />
         </button>
 
         <button
           onClick={next}
           aria-label="Next committee"
-          className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-black/60 backdrop-blur-md border border-white/20 flex items-center justify-center text-white/70 hover:text-amber-400 hover:border-amber-400 transition-all duration-300"
+          className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/60 backdrop-blur-md border border-white/20 flex items-center justify-center text-white/70 hover:text-amber-400 hover:border-amber-400 hover:scale-110 transition-all duration-300"
         >
-          <ChevronRight size={28} />
+          <ChevronRight size={24} />
         </button>
       </div>
 
       {/* Bottom Thumbnails Carousel */}
       <div
         ref={containerRef}
-        className="flex overflow-x-auto border-t border-white/10 bg-zinc-950/90 backdrop-blur-xl scroll-smooth snap-x snap-mandatory py-2 px-4 gap-3"
+        className="flex overflow-x-auto border-t border-white/10 bg-zinc-950/90 backdrop-blur-xl scroll-smooth snap-x snap-mandatory py-2.5 px-4 gap-3"
       >
         {committees.map((c: any, i: number) => (
           <button
@@ -133,8 +152,8 @@ export default function CommitteesPage({ initialIndex = 0, onClose }: Props) {
             className={`
               snap-center
               relative flex-shrink-0 
-              w-32 sm:w-40 md:w-48 
-              h-20 sm:h-24 md:h-28 
+              w-28 sm:w-40 md:w-48 
+              h-18 sm:h-24 md:h-28 
               rounded-xl
               overflow-hidden 
               border
@@ -154,7 +173,8 @@ export default function CommitteesPage({ initialIndex = 0, onClose }: Props) {
               <span className="
                 text-white 
                 text-[10px] sm:text-xs 
-                font-bold 
+                font-urbanist
+                font-extrabold 
                 uppercase 
                 tracking-wider 
                 leading-tight
@@ -172,4 +192,4 @@ export default function CommitteesPage({ initialIndex = 0, onClose }: Props) {
       </div>
     </div>
   );
-}
+}

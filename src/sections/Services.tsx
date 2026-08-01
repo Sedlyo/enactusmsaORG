@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useContent } from '../context/ContentContext';
 import CommitteesPage from '../components/CommitteesPage';
-import TransitionOverlay from '../components/TransitionOverlay';
 import { ArrowUpRight } from 'lucide-react';
 
 export default function Services() {
@@ -10,7 +9,6 @@ export default function Services() {
   const [isVisible, setIsVisible] = useState(false);
   const [committeeOpen, setCommitteeOpen] = useState(false);
   const [committeeIndex, setCommitteeIndex] = useState(0);
-  const [transitioning, setTransitioning] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   useEffect(() => {
@@ -23,24 +21,16 @@ export default function Services() {
   }, []);
 
   const openCommittee = (index: number) => {
-    if (transitioning) return;
     setCommitteeIndex(index);
-    setTransitioning(true);
-    setTimeout(() => setCommitteeOpen(true), 400);
-    setTimeout(() => setTransitioning(false), 850);
+    setCommitteeOpen(true);
   };
 
   const closeCommittee = () => {
-    if (transitioning) return;
-    setTransitioning(true);
-    setTimeout(() => setCommitteeOpen(false), 400);
-    setTimeout(() => setTransitioning(false), 850);
+    setCommitteeOpen(false);
   };
 
   return (
     <>
-      <TransitionOverlay active={transitioning} />
-
       {committeeOpen && <CommitteesPage initialIndex={committeeIndex} onClose={closeCommittee} />}
 
       <section ref={sectionRef} className="relative w-full bg-black overflow-hidden border-t border-white/5">
@@ -74,7 +64,7 @@ export default function Services() {
                 onClick={() => openCommittee(index)}
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
-                className="group relative flex items-center justify-between py-6 px-4 border-b border-white/[0.07] text-left transition-all duration-300 hover:px-6 rounded-xl"
+                className="group relative flex items-center justify-between py-6 px-4 border-b border-white/[0.07] text-left transition-all duration-300 hover:px-6 rounded-xl cursor-pointer"
                 style={{
                   opacity: isVisible ? 1 : 0,
                   transition: `opacity 0.6s ease ${index * 50}ms, padding 0.3s cubic-bezier(0.16, 1, 0.3, 1)`,
@@ -88,7 +78,7 @@ export default function Services() {
                   }`}>
                     {String(index + 1).padStart(2, '0')}
                   </span>
-                  <span className={`text-xl sm:text-2xl lg:text-3xl font-black uppercase tracking-tight transition-colors duration-300 ${
+                  <span className={`text-xl sm:text-2xl lg:text-3xl font-black uppercase tracking-tight transition-colors duration-300 font-urbanist ${
                     hoveredIndex === index ? 'text-amber-400' : 'text-white'
                   }`}>
                     {committee.name}
@@ -97,7 +87,7 @@ export default function Services() {
 
                 {/* Tagline + Arrow */}
                 <div className="flex items-center gap-4 sm:gap-8">
-                  <span className="hidden sm:block text-white/30 text-xs font-medium uppercase tracking-widest">
+                  <span className="hidden sm:block text-white/30 text-xs font-medium uppercase tracking-widest font-urbanist">
                     {committee.tagline}
                   </span>
                   <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full border flex items-center justify-center shrink-0 transition-all duration-300 ${
