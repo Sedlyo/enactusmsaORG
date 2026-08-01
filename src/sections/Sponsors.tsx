@@ -7,32 +7,34 @@ export default function Sponsors() {
   const { ref, isVisible } = useInView(0.2);
 
   return (
-    <section ref={ref} className="relative w-full bg-black py-16 overflow-hidden">
+    <section ref={ref} className="relative w-full bg-black py-24 overflow-hidden border-t border-white/5">
+      {/* Background Lighting */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] bg-amber-500/5 blur-[140px] rounded-full pointer-events-none" />
+
       {/* Header */}
-      <div className="container-custom section-padding mb-10">
+      <div className="container-custom section-padding mb-16 relative z-10">
         <div className={`transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          <p className="text-amber-400 text-xs uppercase tracking-[0.3em] mb-3">Partners & Supporters</p>
-          <h2 className="text-5xl sm:text-6xl lg:text-8xl font-black text-white uppercase leading-none tracking-tighter mb-4">
+          <p className="section-eyebrow mb-3">Partners &amp; Supporters</p>
+          <h2 className="text-5xl sm:text-6xl lg:text-8xl font-black text-white uppercase leading-none tracking-tighter mb-6">
             OUR <span className="text-amber-400">SPONSORS</span>
           </h2>
-          <p className="text-white/50 text-base sm:text-lg max-w-2xl">{sponsors.description}</p>
+          <p className="text-white/55 text-base sm:text-lg max-w-2xl leading-relaxed">{sponsors.description}</p>
         </div>
       </div>
 
-      {/* Sponsor logos */}
+      {/* Sponsor logos grid */}
       {sponsors.logos.length > 0 && (
-        <div className={`container-custom section-padding mb-10 transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          <div className="flex flex-wrap justify-center gap-6">
+        <div className={`container-custom section-padding mb-16 relative z-10 transition-all duration-1000 delay-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
             {sponsors.logos.map((logo, i) => (
               <div
                 key={i}
-                className="flex items-center justify-center p-6 border border-white/10 rounded-2xl hover:border-amber-400/30 transition-all duration-300 group"
-                style={{ width: 'clamp(140px, 22%, 200px)' }}
+                className="flex items-center justify-center aspect-[3/2] p-6 border border-white/[0.08] rounded-xl transition-all duration-400 group hover:border-amber-400/40 hover:-translate-y-1 hover:bg-white/[0.03]"
               >
                 <img
                   src={logo}
                   alt={`Sponsor ${i + 1}`}
-                  className="h-20 w-full object-contain grayscale group-hover:grayscale-0 opacity-60 group-hover:opacity-100 transition-all duration-300"
+                  className="h-14 w-full object-contain grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-400 ease-out"
                 />
               </div>
             ))}
@@ -40,23 +42,26 @@ export default function Sponsors() {
         </div>
       )}
 
-      {/* Scrolling background text */}
-      <div className="flex flex-col gap-1 overflow-hidden opacity-[0.8] pointer-events-none select-none">
-        <div className="flex animate-marquee whitespace-nowrap">
-          {[...Array(8)].map((_, i) => (
-            <span key={i} className="inline-flex items-center text-3xl sm:text-4xl font-black text-white uppercase tracking-tight mr-10">
-              <img src="/assets/EnactusLOGO.png" alt="" className="h-6 w-6 object-contain mx-3 inline-block" />
-              {sponsors.title}
-            </span>
-          ))}
-        </div>
-        <div className="flex animate-marquee whitespace-nowrap">
-          {[...Array(8)].map((_, i) => (
-            <span key={i} className="inline-flex items-center text-3xl sm:text-4xl font-black text-white uppercase tracking-tight mr-10">
-              <img src="/assets/EnactusLOGO.png" alt="" className="h-6 w-6 object-contain mx-3 inline-block" />
-              {sponsors.title}
-            </span>
-          ))}
+      {/* Partner CTA strip */}
+      <div className={`container-custom section-padding relative z-10 transition-all duration-1000 delay-400 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+        <div className="border border-white/[0.08] rounded-2xl p-8 sm:p-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+          <div>
+            <p className="section-eyebrow mb-2">Work With Us</p>
+            <p className="text-white text-lg sm:text-xl font-black uppercase tracking-tight">Become a Partner</p>
+            <p className="text-white/40 text-sm mt-1 leading-relaxed max-w-md">
+              Join the network of organizations supporting student-led entrepreneurship at MSA University.
+            </p>
+          </div>
+          <a
+            href="#contact"
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="shrink-0 button-primary text-sm px-7 py-3"
+          >
+            Get in Touch
+          </a>
         </div>
       </div>
     </section>

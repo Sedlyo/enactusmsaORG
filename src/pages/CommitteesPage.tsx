@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
-import { useContent } from '../context/ContentContext';
+import { useContent, type Committee } from '../context/ContentContext';
 
 interface Props {
   initialIndex?: number;
@@ -8,7 +8,7 @@ interface Props {
 }
 
 export default function CommitteesPage({ initialIndex = 0, onClose }: Props) {
-  const { content } = useContent();
+  const content = useContent();
   const committees = content.committees;
 
   const [active, setActive] = useState(initialIndex);
@@ -60,7 +60,7 @@ export default function CommitteesPage({ initialIndex = 0, onClose }: Props) {
         <img
           src="/assets/enactusMSA2.png"
           alt="Enactus MSA"
-          className="h-14 md:h-14 w-auto"
+          className="h-16 md:h-20 w-auto"
         />
       </div>
 
@@ -130,7 +130,7 @@ export default function CommitteesPage({ initialIndex = 0, onClose }: Props) {
         ref={containerRef}
         className="flex overflow-x-auto border-t border-white/10 bg-black/80 scroll-smooth snap-x snap-mandatory"
       >
-        {committees.map((c, i) => (
+        {committees.map((c: Committee, i: number) => (
           <button
             key={c.name}
             ref={(el) => {

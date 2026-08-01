@@ -9,6 +9,7 @@ import {
   UserCircle,
   Layers,
   Settings,
+  X,
 } from 'lucide-react';
 
 const links = [
@@ -24,15 +25,35 @@ const links = [
   { to: '/admin/settings', label: 'Settings', icon: Settings },
 ] as const;
 
-export default function AdminSidebar() {
+type AdminSidebarProps = {
+  isOpen: boolean;
+  onClose: () => void;
+};
+
+export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
   return (
-    <aside className="w-56 bg-zinc-900 border-r border-zinc-800 min-h-[calc(100vh-3.5rem)] p-4">
+    <aside
+      className={`fixed inset-y-0 left-0 z-40 w-64 transform bg-zinc-900 border-r border-zinc-800 p-4 transition-transform duration-300 md:static md:translate-x-0 md:w-56 md:border-r md:z-auto ${
+        isOpen ? 'translate-x-0' : '-translate-x-full'
+      }`}
+    >
+      <div className="mb-4 flex items-center justify-between md:hidden">
+        <span className="text-white font-semibold">Menu</span>
+        <button
+          onClick={onClose}
+          className="rounded-full p-2 text-zinc-400 hover:text-white hover:bg-white/5"
+          aria-label="Close menu"
+        >
+          <X size={18} />
+        </button>
+      </div>
       <nav className="space-y-1">
         {links.map(({ to, label, icon: Icon, ...rest }) => (
           <NavLink
             key={to}
             to={to}
             end={'end' in rest}
+            onClick={onClose}
             className={({ isActive }) =>
               `flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
                 isActive

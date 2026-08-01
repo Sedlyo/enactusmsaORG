@@ -10,56 +10,59 @@ export default function Contact() {
   return (
     <section
       ref={ref}
-      className="relative w-full bg-black pt-6 pb-12 md:pt-10 md:pb-16 overflow-hidden flex items-start"
+      className="relative w-full bg-black pt-12 pb-24 border-t border-white/5 overflow-hidden"
     >
-      <div className="container-custom px-4 md:px-8 w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16 items-start">
-          {/* Left */}
+      {/* Background Glow */}
+      <div className="absolute bottom-0 right-10 w-96 h-96 bg-amber-500/5 blur-[140px] rounded-full pointer-events-none" />
+
+      <div className="container-custom section-padding w-full relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-16 items-start">
+          {/* Left Info Column */}
           <div
             className={`transition-all duration-1000 ${
               isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'
             }`}
           >
-            <div className="w-10 h-1 bg-amber-400 mb-4 md:mb-6" />
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white mb-4 md:mb-6 leading-tight">
+            <div className="w-12 h-1 bg-amber-400 mb-6 rounded-full shadow-[0_0_10px_rgba(251,191,36,0.5)]" />
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6 leading-tight">
               {contact.heading}
             </h2>
-            <p className="text-white/60 text-sm md:text-base lg:text-lg leading-relaxed mb-6 md:mb-10">
+            <p className="text-white/60 text-base sm:text-lg leading-relaxed mb-8">
               {contact.subheading}
             </p>
-            <div className="flex flex-col gap-4 md:gap-6">
+            <div className="flex flex-col gap-6">
               <a
                 href={`mailto:${contact.email}`}
-                className="flex items-center gap-4 text-white/70 hover:text-amber-400 transition-colors group"
+                className="flex items-center gap-4 text-white/70 hover:text-amber-400 transition-all duration-300 group"
               >
-                <div className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-white/20 group-hover:border-amber-400 flex items-center justify-center">
-                  <Mail size={18} />
+                <div className="w-12 h-12 rounded-full border border-white/10 bg-white/[0.03] group-hover:border-amber-400 group-hover:bg-amber-400/10 flex items-center justify-center transition-all duration-300 shadow-md">
+                  <Mail size={20} className="group-hover:scale-110 transition-transform" />
                 </div>
-                <span className="text-sm md:text-base break-words">{contact.email}</span>
+                <span className="text-base font-semibold break-words">{contact.email}</span>
               </a>
               {contact.phone && (
                 <a
                   href={`tel:${contact.phone}`}
-                  className="flex items-center gap-4 text-white/70 hover:text-amber-400 transition-colors group"
+                  className="flex items-center gap-4 text-white/70 hover:text-amber-400 transition-all duration-300 group"
                 >
-                  <div className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-white/20 group-hover:border-amber-400 flex items-center justify-center">
-                    <Phone size={18} />
+                  <div className="w-12 h-12 rounded-full border border-white/10 bg-white/[0.03] group-hover:border-amber-400 group-hover:bg-amber-400/10 flex items-center justify-center transition-all duration-300 shadow-md">
+                    <Phone size={20} className="group-hover:scale-110 transition-transform" />
                   </div>
-                  <span className="text-sm md:text-base">{contact.phone}</span>
+                  <span className="text-base font-semibold">{contact.phone}</span>
                 </a>
               )}
               <div className="flex items-center gap-4 text-white/70">
-                <div className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-white/20 flex items-center justify-center">
-                  <MapPin size={18} />
+                <div className="w-12 h-12 rounded-full border border-white/10 bg-white/[0.03] flex items-center justify-center shadow-md">
+                  <MapPin size={20} />
                 </div>
-                <span className="text-sm md:text-base break-words">{contact.address}</span>
+                <span className="text-base font-semibold break-words">{contact.address}</span>
               </div>
             </div>
           </div>
 
-          {/* Right - form */}
+          {/* Right Form Card */}
           <div
-            className={`transition-all duration-1000 delay-300 ${
+            className={`transition-all duration-1000 delay-200 ${
               isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'
             }`}
           >
@@ -75,41 +78,41 @@ export default function Contact() {
                 window.open(`mailto:${contact.email}?subject=${subject}&body=${body}`);
                 form.reset();
               }}
-              className="bg-white/5 border border-white/10 rounded-2xl p-6 md:p-8 flex flex-col gap-4"
+              className="bg-zinc-950/80 border border-white/10 rounded-3xl p-8 sm:p-10 flex flex-col gap-5 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.6)] hover:border-amber-400/30 transition-all duration-500"
             >
-              <div className="flex flex-col gap-1">
-                <label className="text-white/50 text-xs uppercase tracking-wider">Name</label>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-white/60 text-xs font-bold uppercase tracking-wider">Your Name</label>
                 <input
                   type="text"
                   name="name"
                   required
-                  placeholder="Your name"
-                  className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/30 outline-none focus:border-amber-400/50"
+                  placeholder="John Doe"
+                  className="px-4 py-3.5 bg-white/[0.03] border border-white/10 rounded-xl text-white placeholder-white/20 outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all duration-300"
                 />
               </div>
-              <div className="flex flex-col gap-1">
-                <label className="text-white/50 text-xs uppercase tracking-wider">Email</label>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-white/60 text-xs font-bold uppercase tracking-wider">Email Address</label>
                 <input
                   type="email"
                   name="email"
                   required
-                  placeholder="your@email.com"
-                  className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/30 outline-none focus:border-amber-400/50"
+                  placeholder="john@example.com"
+                  className="px-4 py-3.5 bg-white/[0.03] border border-white/10 rounded-xl text-white placeholder-white/20 outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all duration-300"
                 />
               </div>
-              <div className="flex flex-col gap-1">
-                <label className="text-white/50 text-xs uppercase tracking-wider">Message</label>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-white/60 text-xs font-bold uppercase tracking-wider">Message</label>
                 <textarea
                   name="message"
                   rows={4}
                   required
-                  placeholder="Your message..."
-                  className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/30 outline-none focus:border-amber-400/50 resize-none"
+                  placeholder="How can we help or collaborate?"
+                  className="px-4 py-3.5 bg-white/[0.03] border border-white/10 rounded-xl text-white placeholder-white/20 outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all duration-300 resize-none"
                 />
               </div>
               <button
                 type="submit"
-                className="w-full py-3 bg-amber-400 hover:bg-amber-300 text-black font-bold rounded-xl transition-colors"
+                className="mt-2 button-primary w-full py-4 text-sm font-black uppercase tracking-widest bg-amber-400 text-black hover:bg-amber-300 transition-all duration-300 rounded-xl shadow-[0_10px_30px_rgba(251,191,36,0.3)] hover:scale-[1.02] active:scale-[0.98]"
               >
                 Send Message
               </button>
@@ -120,3 +123,4 @@ export default function Contact() {
     </section>
   );
 }
+

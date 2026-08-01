@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import AdminSidebar from './components/AdminSidebar';
@@ -11,11 +12,12 @@ import TeamEditor from './editors/TeamEditor';
 import ContactEditor from './editors/ContactEditor';
 import DashboardHome from './editors/DashboardHome';
 import SettingsPage from './editors/SettingsPage';
-import { LogOut } from 'lucide-react';
+import { LogOut, Menu, X } from 'lucide-react';
 
 export default function AdminLayout() {
   const { logout } = useAuth();
   const navigate = useNavigate();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleLogout = async () => {
     await logout();
@@ -25,10 +27,19 @@ export default function AdminLayout() {
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Top bar */}
-      <header className="h-14 bg-zinc-900 border-b border-zinc-800 flex items-center justify-between px-6">
+      <header className="h-14 bg-zinc-900 border-b border-zinc-800 flex items-center justify-between px-4 sm:px-6">
         <div className="flex items-center gap-3">
-          <span className="text-amber-400 font-bold text-lg">Enactus MSA</span>
-          <span className="text-zinc-500 text-sm">Admin Panel</span>
+          <button
+            onClick={() => setSidebarOpen((current) => !current)}
+            className="md:hidden inline-flex h-10 w-10 items-center justify-center rounded-full border border-zinc-800 bg-zinc-950 text-zinc-300 hover:text-white transition-colors duration-200"
+            aria-label="Toggle menu"
+          >
+            {sidebarOpen ? <X size={18} /> : <Menu size={18} />}
+          </button>
+          <div className="flex items-center gap-3">
+            <span className="text-amber-400 font-bold text-lg">Enactus MSA</span>
+            <span className="text-zinc-500 text-sm hidden sm:inline">Admin Panel</span>
+          </div>
         </div>
         <button
           onClick={handleLogout}
@@ -39,9 +50,16 @@ export default function AdminLayout() {
         </button>
       </header>
 
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-30 bg-black/50 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       <div className="flex">
-        <AdminSidebar />
-        <main className="flex-1 p-8">
+        <AdminSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+        <main className="flex-1 p-4 sm:p-8 min-h-[calc(100vh-3.5rem)]">
           <Routes>
             <Route index element={<DashboardHome />} />
             <Route path="hero" element={<HeroEditor />} />

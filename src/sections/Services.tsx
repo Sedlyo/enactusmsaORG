@@ -1,8 +1,7 @@
-//services is the (committees) section, too lazy to rename the file completely :)
-
 import { useEffect, useRef, useState } from 'react';
 import { useContent } from '../context/ContentContext';
-import CommitteesPage from '../pages/CommitteesPage';
+import CommitteesPage from '../components/CommitteesPage';
+import TransitionOverlay from '../components/TransitionOverlay';
 import { ArrowUpRight } from 'lucide-react';
 
 export default function Services() {
@@ -24,38 +23,33 @@ export default function Services() {
   }, []);
 
   const openCommittee = (index: number) => {
+    if (transitioning) return;
     setCommitteeIndex(index);
     setTransitioning(true);
     setTimeout(() => setCommitteeOpen(true), 400);
-    setTimeout(() => setTransitioning(false), 900);
+    setTimeout(() => setTransitioning(false), 850);
   };
 
   const closeCommittee = () => {
+    if (transitioning) return;
     setTransitioning(true);
     setTimeout(() => setCommitteeOpen(false), 400);
-    setTimeout(() => setTransitioning(false), 900);
+    setTimeout(() => setTransitioning(false), 850);
   };
 
   return (
     <>
-      {/* Transition overlay */}
-      <div className={`fixed inset-0 z-[300] pointer-events-none transition-all duration-500 ${transitioning ? 'opacity-100' : 'opacity-0'}`}>
-        <div className={`absolute inset-0 bg-amber-400 transition-all duration-500 ${transitioning ? 'translate-y-0' : '-translate-y-full'}`} style={{ transitionTimingFunction: 'cubic-bezier(0.76, 0, 0.24, 1)' }} />
-        <div className={`absolute inset-0 bg-amber-500 transition-all duration-500 delay-75 ${transitioning ? 'translate-y-0' : '-translate-y-full'}`} style={{ transitionTimingFunction: 'cubic-bezier(0.76, 0, 0.24, 1)' }} />
-        <div className={`absolute inset-0 flex items-center justify-center transition-all duration-300 delay-200 ${transitioning ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}>
-          <span className="text-black text-6xl font-black tracking-tighter">ENACTUS</span>
-        </div>
-      </div>
+      <TransitionOverlay active={transitioning} />
 
       {committeeOpen && <CommitteesPage initialIndex={committeeIndex} onClose={closeCommittee} />}
 
-      <section ref={sectionRef} className="relative w-full bg-black overflow-hidden">
+      <section ref={sectionRef} className="relative w-full bg-black overflow-hidden border-t border-white/5">
 
         {/* Header */}
-        <div className="container-custom section-padding pt-20 pb-12">
+        <div className="container-custom section-padding pt-24 pb-12">
           <div className={`flex flex-col sm:flex-row sm:items-end justify-between gap-6 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
             <div>
-              <p className="text-amber-400 text-xs uppercase tracking-[0.3em] mb-3">What we do</p>
+              <p className="section-eyebrow mb-3">What We Do</p>
               <h2 className="text-5xl sm:text-6xl lg:text-8xl font-black text-white uppercase leading-none tracking-tighter">
                 Commi<span className="text-amber-400">ttees</span>
               </h2>
@@ -68,31 +62,30 @@ export default function Services() {
 
         {/* Divider */}
         <div className="container-custom section-padding">
-          <div className={`h-px bg-white/10 transition-all duration-1000 delay-200 ${isVisible ? 'opacity-100' : 'opacity-0'}`} />
+          <div className={`h-px bg-gradient-to-r from-amber-400/40 via-white/10 to-transparent transition-all duration-1000 delay-200 ${isVisible ? 'opacity-100' : 'opacity-0'}`} />
         </div>
 
         {/* Committee list */}
-        <div className="container-custom section-padding pb-20">
-          <div className={`flex flex-col transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
+        <div className="container-custom section-padding pb-24">
+          <div className={`flex flex-col mt-4 transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
             {committees.map((committee: any, index: number) => (
               <button
                 key={committee.name}
                 onClick={() => openCommittee(index)}
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
-                className={`group relative flex items-center justify-between py-5 sm:py-6 border-b border-white/10 text-left transition-all duration-300 ${
-                  hoveredIndex === index ? 'px-4 bg-white/[0.03]' : 'px-0'
-                }`}
+                className="group relative flex items-center justify-between py-6 px-4 border-b border-white/[0.07] text-left transition-all duration-300 hover:px-6 rounded-xl"
                 style={{
-                  transitionDelay: `${index * 40}ms`,
                   opacity: isVisible ? 1 : 0,
-                  transform: isVisible ? 'translateY(0)' : 'translateY(20px)',
-                  transition: `opacity 0.6s ease ${index * 40}ms, transform 0.6s ease ${index * 40}ms, padding 0.3s ease, background 0.3s ease`,
+                  transition: `opacity 0.6s ease ${index * 50}ms, padding 0.3s cubic-bezier(0.16, 1, 0.3, 1)`,
+                  background: hoveredIndex === index ? 'rgba(251,191,36,0.05)' : 'transparent',
                 }}
               >
                 {/* Index + Name */}
-                <div className="flex items-center gap-4 sm:gap-8">
-                  <span className="text-white/20 text-xs font-mono w-6 shrink-0">
+                <div className="flex items-center gap-5 sm:gap-8">
+                  <span className={`text-xs font-mono w-6 shrink-0 transition-colors duration-300 ${
+                    hoveredIndex === index ? 'text-amber-400' : 'text-white/20'
+                  }`}>
                     {String(index + 1).padStart(2, '0')}
                   </span>
                   <span className={`text-xl sm:text-2xl lg:text-3xl font-black uppercase tracking-tight transition-colors duration-300 ${
@@ -104,29 +97,18 @@ export default function Services() {
 
                 {/* Tagline + Arrow */}
                 <div className="flex items-center gap-4 sm:gap-8">
-                  <span className="hidden sm:block text-white/30 text-xs uppercase tracking-widest">
+                  <span className="hidden sm:block text-white/30 text-xs font-medium uppercase tracking-widest">
                     {committee.tagline}
                   </span>
-                  <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full border flex items-center justify-center shrink-0 transition-all duration-300 ${
+                  <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full border flex items-center justify-center shrink-0 transition-all duration-300 ${
                     hoveredIndex === index
-                      ? 'border-amber-400 bg-amber-400 text-black'
-                      : 'border-white/20 text-white/40'
+                      ? 'border-amber-400 bg-amber-400 text-black scale-110'
+                      : 'border-white/15 text-white/30'
                   }`}>
-                    <ArrowUpRight size={14} />
+                    <ArrowUpRight size={16} className="transition-transform duration-300 group-hover:rotate-45" />
                   </div>
                 </div>
               </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Bottom marquee */}
-        <div className="border-t border-white/5 overflow-hidden">
-          <div className="flex animate-marquee whitespace-nowrap py-4">
-            {[...Array(4)].map((_, i) => (
-              <span key={i} className="text-[5vw] font-black text-white/[0.04] uppercase tracking-tight mx-8">
-                MARKETING — PR&FR — VISUALS — OPERATIONS — LOGISTICS —
-              </span>
             ))}
           </div>
         </div>

@@ -1,0 +1,7 @@
+# Robots.txt for Enactus MSA
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /login
+
+Sitemap: https://enactusmsa.org/sitemap.xml

@@ -21,8 +21,10 @@ function Counter({ end, duration = 2000, suffix = '' }: CounterProps) {
           let startTime: number;
           const animate = (currentTime: number) => {
             if (!startTime) startTime = currentTime;
-            const progress = Math.min((currentTime - startTime) / duration, 1);
-            setCount(Math.floor(progress * end));
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const easedProgress = progress * (2 - progress);
+            setCount(Math.floor(easedProgress * end));
             if (progress < 1) {
               requestAnimationFrame(animate);
             }
@@ -30,7 +32,7 @@ function Counter({ end, duration = 2000, suffix = '' }: CounterProps) {
           requestAnimationFrame(animate);
         }
       },
-      { threshold: 0.5 }
+      { threshold: 0.4 }
     );
     if (countRef.current) observer.observe(countRef.current);
     return () => observer.disconnect();
@@ -52,49 +54,55 @@ export default function Stats() {
   return (
     <section
       ref={ref}
-      className="relative min-h-[60vh] w-full bg-black py-20 overflow-hidden"
+      className="relative w-full bg-black py-24 overflow-hidden border-t border-white/5"
     >
-      <div className="container-custom section-padding">
-        <div className="flex flex-col lg:flex-row items-center justify-center gap-16 lg:gap-32">
-          {/* Years of experience */}
-          <div
-            className={`text-center transition-all duration-1000 ${
-              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-            }`}
-          >
-            <div className="relative">
-              <span className="text-[15vw] lg:text-[12vw] font-black text-white leading-none">
-                <Counter end={stats.yearsOfExperience} />
-              </span>
+      {/* Background Lighting */}
+      <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-80 h-80 bg-amber-400/5 blur-[100px] rounded-full pointer-events-none" />
+
+      <div className="container-custom section-padding relative z-10">
+        <div className="grid gap-12 xl:grid-cols-[1.4fr_1fr] items-center">
+          
+          {/* Left text block */}
+          <div className={`transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+            <p className="section-eyebrow mb-4">What We've Achieved</p>
+            <h2 className="text-5xl sm:text-6xl lg:text-7xl font-black text-white uppercase leading-tight tracking-tighter">
+              Impact <span className="text-amber-400">In Numbers</span>
+            </h2>
+            <p className="mt-6 max-w-xl text-white/55 text-base sm:text-lg leading-relaxed">
+              Enactus MSA combines ambitious ideas with structured teamwork to deliver meaningful projects, leadership experience, and long-term community results.
+            </p>
+          </div>
+
+          {/* Right stat cards — consistent visual language */}
+          <div className="grid gap-4">
+            <div className={`border-l-2 border-amber-400 bg-white/[0.02] rounded-2xl p-8 sm:p-10 transition-all duration-1000 hover:bg-white/[0.04] ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+              <p className="text-[11px] uppercase font-bold tracking-[0.25em] text-white/40 mb-4">Years of Experience</p>
+              <div className="flex items-end gap-3">
+                <span className="text-6xl sm:text-7xl font-black text-white leading-none">
+                  <Counter end={stats.yearsOfExperience} />
+                </span>
+                <span className="text-base font-bold text-amber-400 uppercase tracking-widest mb-2">yrs</span>
+              </div>
+              <p className="mt-4 text-white/50 text-sm leading-relaxed">
+                Equipping students with hands-on leadership, professional development, and real project management.
+              </p>
             </div>
-            <div className="mt-4">
-              <p className="text-white/60 text-lg uppercase tracking-wider">Years of</p>
-              <p className="text-white text-2xl font-semibold uppercase tracking-wider">experience</p>
+
+            <div className={`border-l-2 border-amber-400/50 bg-white/[0.02] rounded-2xl p-8 sm:p-10 transition-all duration-1000 delay-150 hover:bg-white/[0.04] ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+              <p className="text-[11px] uppercase font-bold tracking-[0.25em] text-white/40 mb-4">Projects Completed</p>
+              <div className="flex items-end gap-3">
+                <span className="text-6xl sm:text-7xl font-black text-amber-400 leading-none">
+                  <Counter end={stats.projectsCompleted} />
+                </span>
+                <span className="text-base font-bold text-white/50 uppercase tracking-widest mb-2">initiatives</span>
+              </div>
+              <p className="mt-4 text-white/50 text-sm leading-relaxed">
+                Well-structured projects that build community value, social innovation, and stakeholder trust.
+              </p>
             </div>
           </div>
 
-          {/* Divider */}
-          <div className="hidden lg:block w-px h-40 bg-white/20" />
-
-          {/* Projects completed */}
-          <div
-            className={`text-center transition-all duration-1000 delay-200 ${
-              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-            }`}
-          >
-            <div className="relative">
-              <span className="text-4xl lg:text-5xl font-bold text-white/60 uppercase tracking-wider">
-                Over <Counter end={stats.projectsCompleted} /> Projects completed
-              </span>
-            </div>
-          </div>
         </div>
-      </div>
-
-      {/* Background decoration */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] border border-white/5 rounded-full" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-white/5 rounded-full" />
       </div>
     </section>
   );
