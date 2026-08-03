@@ -1,14 +1,14 @@
-import Navigation from '@/components/Navigation';
-import Hero from '@/sections/Hero';
-import About from '@/sections/About';
-import Stats from '@/sections/Stats';
-import Board from '@/sections/Board';
-import Services from '@/sections/Services';
-import Sponsors from '@/sections/Sponsors';
-import Team from '@/sections/Team';
-import GetInTouch from '@/sections/GetInTouch';
-import Contact from '@/sections/Contact';
-import Footer from '@/sections/Footer';
+import Navigation from '../components/Navigation';
+import Hero from '../sections/Hero';
+import About from '../sections/About';
+import Stats from '../sections/Stats';
+import Board from '../sections/Board';
+import Services from '../sections/Services';
+import Sponsors from '../sections/Sponsors';
+import Team from '../sections/Team';
+import GetInTouch from '../sections/GetInTouch';
+import Contact from '../sections/Contact';
+import Footer from '../sections/Footer';
 
 export default function LandingPage() {
   return (

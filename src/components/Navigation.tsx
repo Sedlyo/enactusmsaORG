@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Menu, X, ArrowRight } from 'lucide-react';
 import TransitionOverlay from './TransitionOverlay';
+import { useContent } from '../context/ContentContext';
 
 const navLinks = [
   { name: 'Home', href: '#home', sectionId: 'home' },
@@ -13,6 +14,7 @@ const navLinks = [
 ];
 
 export default function Navigation() {
+  const content = useContent();
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -79,6 +81,8 @@ export default function Navigation() {
     }, 850);
   };
 
+  const logoUrl = content.settings?.logo || '/assets/enactusMSA2.png';
+
   return (
     <>
       <TransitionOverlay active={transitioning} />
@@ -87,12 +91,12 @@ export default function Navigation() {
       <nav
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           isScrolled
-            ? 'bg-black/85 backdrop-blur-2xl border-b border-white/10 shadow-[0_10px_35px_rgba(0,0,0,0.9)] py-1.5'
-            : 'bg-gradient-to-b from-black/90 via-black/50 to-transparent py-2.5'
+            ? 'bg-black/85 backdrop-blur-2xl border-b border-white/10 shadow-[0_10px_35px_rgba(0,0,0,0.9)] py-2'
+            : 'bg-gradient-to-b from-black/90 via-black/50 to-transparent py-3.5'
         }`}
       >
         <div className="container-custom section-padding">
-          <div className="flex items-center justify-between h-14 sm:h-20">
+          <div className="flex items-center justify-between h-16 sm:h-24">
             {/* Logo */}
             <a
               href="#home"
@@ -103,9 +107,9 @@ export default function Navigation() {
               className="flex items-center group transition-transform duration-300 hover:scale-105 active:scale-95"
             >
               <img
-                src="/assets/enactusMSA2.png"
+                src={logoUrl}
                 alt="Enactus MSA Logo"
-                className="h-12 sm:h-20 w-auto object-contain"
+                className="h-16 sm:h-24 md:h-28 w-auto object-contain drop-shadow-[0_0_15px_rgba(251,191,36,0.25)]"
               />
             </a>
 

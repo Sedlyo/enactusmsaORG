@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useContentState } from '@/context/ContentContext';
-import { updateSection } from '@/lib/firestore';
 import FormField from '../components/FormField';
 import SaveButton from '../components/SaveButton';
 
 export default function ContactEditor() {
-  const { content, refreshContent } = useContentState();
+  const { content, updateContentSection } = useContentState();
   const [form, setForm] = useState(content.contact);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -21,8 +20,7 @@ export default function ContactEditor() {
 
   const handleSave = async () => {
     setSaving(true);
-    await updateSection('contact', form);
-    await refreshContent();
+    await updateContentSection('contact', form);
     setSaving(false);
     setSaved(true);
   };
@@ -44,3 +42,4 @@ export default function ContactEditor() {
     </div>
   );
 }
+

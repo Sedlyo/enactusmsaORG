@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
-import { useContent } from '../context/ContentContext';
+import { useContent, siteContent as defaults } from '../context/ContentContext';
 
 export default function Hero() {
   const content = useContent();
-  const { hero } = content;
+  const hero = content.hero || defaults.hero;
   const [logoIndex, setLogoIndex] = useState(0);
 
   useEffect(() => {

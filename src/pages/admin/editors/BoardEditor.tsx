@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useContentState } from '@/context/ContentContext';
-import { updateSection } from '@/lib/firestore';
 import { uploadImage } from '@/lib/upload';
 import FormField from '../components/FormField';
 import SaveButton from '../components/SaveButton';
@@ -8,7 +7,7 @@ import ImageField from '../components/ImageField';
 import { Plus } from 'lucide-react';
 
 export default function BoardEditor() {
-  const { content, refreshContent } = useContentState();
+  const { content, updateContentSection } = useContentState();
   const [form, setForm] = useState(content.board);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -53,8 +52,7 @@ export default function BoardEditor() {
         images[Number(idx)] = await uploadImage(file);
       }
     }
-    await updateSection('board', { ...form, images });
-    await refreshContent();
+    await updateContentSection('board', { ...form, images });
     setPendingFiles({});
     setSaving(false);
     setSaved(true);
@@ -102,3 +100,4 @@ export default function BoardEditor() {
     </div>
   );
 }
+

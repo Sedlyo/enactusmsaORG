@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
-import { useContentState } from '@/context/ContentContext';
-import { updateSection, seedDefaults } from '@/lib/firestore';
-import { uploadImage } from '@/lib/upload';
+import { useContentState } from '../../../context/ContentContext';
+import { seedDefaults } from '../../../lib/firestore';
+import { uploadImage } from '../../../lib/upload';
 import FormField from '../components/FormField';
 import SaveButton from '../components/SaveButton';
 import ImageField from '../components/ImageField';
 
 export default function SettingsPage() {
-  const { content, refreshContent } = useContentState();
+  const { content, refreshContent, updateContentSection } = useContentState();
   const [form, setForm] = useState(content.settings);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -30,8 +30,7 @@ export default function SettingsPage() {
         data[key as keyof typeof data] = await uploadImage(file);
       }
     }
-    await updateSection('settings', data);
-    await refreshContent();
+    await updateContentSection('settings', data);
     setPendingFiles({});
     setSaving(false);
     setSaved(true);
@@ -40,6 +39,7 @@ export default function SettingsPage() {
   const handleSeed = async () => {
     setSeeding(true);
     try {
+      localStorage.removeItem('enactus_site_content');
       await seedDefaults();
       await refreshContent();
     } catch (err) {
@@ -120,3 +120,4 @@ export default function SettingsPage() {
     </div>
   );
 }
+

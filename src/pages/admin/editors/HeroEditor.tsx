@@ -1,13 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useContentState } from '@/context/ContentContext';
-import { updateSection } from '@/lib/firestore';
 import { uploadImage } from '@/lib/upload';
 import FormField from '../components/FormField';
 import SaveButton from '../components/SaveButton';
 import ImageField from '../components/ImageField';
 
 export default function HeroEditor() {
-  const { content, refreshContent } = useContentState();
+  const { content, updateContentSection } = useContentState();
   const [form, setForm] = useState(content.hero);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -31,8 +30,7 @@ export default function HeroEditor() {
         data[key as keyof typeof data] = await uploadImage(file);
       }
     }
-    await updateSection('hero', data);
-    await refreshContent();
+    await updateContentSection('hero', data);
     setPendingFiles({});
     setSaving(false);
     setSaved(true);
@@ -66,3 +64,4 @@ export default function HeroEditor() {
     </div>
   );
 }
+

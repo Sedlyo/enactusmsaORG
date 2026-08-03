@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
-import { useContent } from '../context/ContentContext';
+import { useContent, siteContent as defaults } from '../context/ContentContext';
 import CommitteesPage from '../components/CommitteesPage';
 import { ArrowUpRight } from 'lucide-react';
 
 export default function Services() {
-  const { committees } = useContent();
+  const content = useContent();
+  const rawCommittees = content.committees;
+  const committees = (rawCommittees && rawCommittees.length > 0) ? rawCommittees : defaults.committees;
   const sectionRef = useRef<HTMLElement>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [committeeOpen, setCommitteeOpen] = useState(false);

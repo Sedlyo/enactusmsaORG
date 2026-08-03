@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useContentState } from '@/context/ContentContext';
-import { setTeamMembers } from '@/lib/firestore';
 import { uploadImage } from '@/lib/upload';
 import type { TeamMember } from '@/context/ContentContext';
 import FormField from '../components/FormField';
@@ -9,7 +8,7 @@ import ImageField from '../components/ImageField';
 import { Plus, Trash2, GripVertical } from 'lucide-react';
 
 export default function TeamEditor() {
-  const { content, refreshContent } = useContentState();
+  const { content, updateTeamMembers } = useContentState();
   const [items, setItems] = useState<TeamMember[]>(content.team);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -78,8 +77,7 @@ export default function TeamEditor() {
         };
       }
     }
-    await setTeamMembers(members);
-    await refreshContent();
+    await updateTeamMembers(members);
     setPendingFiles({});
     setSaving(false);
     setSaved(true);
@@ -143,3 +141,4 @@ export default function TeamEditor() {
     </div>
   );
 }
+

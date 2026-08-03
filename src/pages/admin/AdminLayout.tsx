@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import AdminSidebar from './components/AdminSidebar';
 import HeroEditor from './editors/HeroEditor';
 import AboutEditor from './editors/AboutEditor';

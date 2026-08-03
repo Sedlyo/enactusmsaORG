@@ -1,26 +1,29 @@
 import { useEffect, useState } from 'react';
-import { useContent } from '../context/ContentContext';
+import { useContent, siteContent as defaults } from '../context/ContentContext';
 import { useInView } from '../hooks/use-in-view';
 import { Shield, Users, Rocket, Award } from 'lucide-react';
 
 export default function About() {
   const content = useContent();
-  const { about } = content;
+  const about = content.about || defaults.about;
   const { ref, isVisible } = useInView(0.2);
   const [displayed, setDisplayed] = useState('');
+
+  const headingText = about.heading || 'Who We Are';
+  const images = (about.images && about.images.length > 0) ? about.images : defaults.about.images;
 
   useEffect(() => {
     if (!isVisible) return;
     setDisplayed('');
     let i = 0;
-    const fullText = about.heading;
+    const fullText = headingText;
     const timer = setInterval(() => {
       setDisplayed(fullText.slice(0, i + 1));
       i++;
-      if (i === fullText.length) clearInterval(timer);
+      if (i >= fullText.length) clearInterval(timer);
     }, 50);
     return () => clearInterval(timer);
-  }, [isVisible, about.heading]);
+  }, [isVisible, headingText]);
 
   return (
     <section ref={ref} className="relative min-h-screen w-full bg-black py-24 overflow-hidden">
@@ -39,10 +42,10 @@ export default function About() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Interactive Images Grid */}
           <div className={`grid grid-cols-2 gap-4 p-4 rounded-[32px] border border-white/15 bg-white/[0.02] backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.7)] overflow-hidden transition-all duration-1000 delay-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-            {about.images.slice(0, 4).map((src, i) => (
+            {images.slice(0, 4).map((src, i) => (
               <div key={i} className="aspect-square overflow-hidden rounded-[20px] border border-white/10 bg-white/5 group relative shadow-md">
                 <img 
-                  src={src} 
+                  src={src || '/assets/placeholder.png'} 
                   alt={`Enactus MSA highlight ${i + 1}`} 
                   className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110" 
                 />
@@ -61,8 +64,8 @@ export default function About() {
               <div className="absolute top-0 left-0 w-32 h-1 bg-gradient-to-r from-amber-400 via-amber-500 to-transparent" />
               
               <h3 className="text-2xl sm:text-4xl font-black text-white leading-tight min-h-[4rem]">
-                {displayed}
-                {displayed.length < about.heading.length && (
+                {displayed || about.heading}
+                {displayed.length > 0 && displayed.length < about.heading.length && (
                   <span className="inline-block w-1.5 h-7 ml-1 bg-amber-400 animate-pulse align-middle" />
                 )}
               </h3>

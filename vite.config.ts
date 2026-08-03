@@ -35,32 +35,37 @@ function uploadPlugin(): Plugin {
   return {
     name: "upload-api",
     configureServer(server) {
-      server.middlewares.use("/api/upload.php", (req, res, next) => {
-        if (req.method === "POST") {
-          upload.single("image")(req as any, res as any, (err: any) => {
-            if (err) return res.writeHead(400).end(JSON.stringify({ error: err.message }));
-            const file = (req as any).file;
-            if (!file) return res.writeHead(400).end(JSON.stringify({ error: "No valid image" }));
-            res.setHeader("Content-Type", "application/json");
-            res.end(JSON.stringify({ path: `/assets/uploads/${file.filename}` }));
-          });
-        } else if (req.method === "DELETE") {
-          let body = "";
-          req.on("data", (chunk) => (body += chunk));
-          req.on("end", () => {
-            try {
-              const { path: filePath } = JSON.parse(body);
-              if (!filePath?.startsWith("/assets/uploads/")) {
-                return res.writeHead(400).end(JSON.stringify({ error: "Invalid path" }));
-              }
-              const fullPath = path.resolve(__dirname, "public", filePath.slice(1));
-              if (fs.existsSync(fullPath)) fs.unlinkSync(fullPath);
+      server.middlewares.use((req, res, next) => {
+        const url = req.url || '';
+        if (url.startsWith('/api/upload') || url.startsWith('/api/upload.php')) {
+          if (req.method === "POST") {
+            upload.single("image")(req as any, res as any, (err: any) => {
+              if (err) return res.writeHead(400).end(JSON.stringify({ error: err.message }));
+              const file = (req as any).file;
+              if (!file) return res.writeHead(400).end(JSON.stringify({ error: "No valid image" }));
               res.setHeader("Content-Type", "application/json");
-              res.end(JSON.stringify({ ok: true }));
-            } catch {
-              res.writeHead(400).end(JSON.stringify({ error: "Bad request" }));
-            }
-          });
+              res.end(JSON.stringify({ path: `/assets/uploads/${file.filename}` }));
+            });
+          } else if (req.method === "DELETE") {
+            let body = "";
+            req.on("data", (chunk) => (body += chunk));
+            req.on("end", () => {
+              try {
+                const { path: filePath } = JSON.parse(body);
+                if (!filePath?.startsWith("/assets/uploads/")) {
+                  return res.writeHead(400).end(JSON.stringify({ error: "Invalid path" }));
+                }
+                const fullPath = path.resolve(__dirname, "public", filePath.slice(1));
+                if (fs.existsSync(fullPath)) fs.unlinkSync(fullPath);
+                res.setHeader("Content-Type", "application/json");
+                res.end(JSON.stringify({ ok: true }));
+              } catch {
+                res.writeHead(400).end(JSON.stringify({ error: "Bad request" }));
+              }
+            });
+          } else {
+            next();
+          }
         } else {
           next();
         }

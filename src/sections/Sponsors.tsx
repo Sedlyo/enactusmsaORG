@@ -1,9 +1,10 @@
-import { useContent } from '../context/ContentContext';
+import { useContent, siteContent as defaults } from '../context/ContentContext';
 import { useInView } from '../hooks/use-in-view';
 
 export default function Sponsors() {
   const content = useContent();
-  const { sponsors } = content;
+  const sponsors = content.sponsors || defaults.sponsors;
+  const logos = sponsors.logos || [];
   const { ref, isVisible } = useInView(0.2);
 
   return (
@@ -23,10 +24,10 @@ export default function Sponsors() {
       </div>
 
       {/* Sponsor logos grid */}
-      {sponsors.logos.length > 0 && (
+      {logos.length > 0 && (
         <div className={`container-custom section-padding mb-16 relative z-10 transition-all duration-1000 delay-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
-            {sponsors.logos.map((logo, i) => (
+            {logos.map((logo, i) => (
               <div
                 key={i}
                 className="flex items-center justify-center aspect-[3/2] p-6 border border-white/[0.08] rounded-xl transition-all duration-400 group hover:border-amber-400/40 hover:-translate-y-1 hover:bg-white/[0.03]"

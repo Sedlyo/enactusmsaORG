@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useContentState } from '@/context/ContentContext';
-import { updateSection } from '@/lib/firestore';
 import { uploadImage } from '@/lib/upload';
 import FormField from '../components/FormField';
 import SaveButton from '../components/SaveButton';
@@ -8,7 +7,7 @@ import ImageField from '../components/ImageField';
 import { Plus } from 'lucide-react';
 
 export default function AboutEditor() {
-  const { content, refreshContent } = useContentState();
+  const { content, updateContentSection } = useContentState();
   const [form, setForm] = useState(content.about);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -58,8 +57,8 @@ export default function AboutEditor() {
         images[Number(idx)] = await uploadImage(file);
       }
     }
-    await updateSection('about', { ...form, images });
-    await refreshContent();
+    const updatedData = { ...form, images };
+    await updateContentSection('about', updatedData);
     setPendingFiles({});
     setSaving(false);
     setSaved(true);
@@ -75,7 +74,7 @@ export default function AboutEditor() {
         <FormField label="Paragraph 3" value={form.paragraph3} onChange={(v) => update('paragraph3', v)} type="textarea" />
 
         <div className="border-t border-zinc-800 pt-4 mt-4">
-          <h2 className="text-lg font-semibold mb-3">Stats</h2>
+          <h2 className="text-lg font-semibold mb-3">Quick Stats</h2>
           <div className="grid grid-cols-2 gap-4">
             <FormField label="Stat 1 Value" value={form.stat1Value} onChange={(v) => update('stat1Value', v)} />
             <FormField label="Stat 1 Label" value={form.stat1Label} onChange={(v) => update('stat1Label', v)} />
@@ -114,3 +113,4 @@ export default function AboutEditor() {
     </div>
   );
 }
+

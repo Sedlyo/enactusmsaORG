@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useContentState } from '@/context/ContentContext';
-import { setCommittees } from '@/lib/firestore';
 import { uploadImage } from '@/lib/upload';
 import type { Committee } from '@/context/ContentContext';
 import FormField from '../components/FormField';
@@ -9,7 +8,7 @@ import ImageField from '../components/ImageField';
 import { Plus, Trash2, GripVertical } from 'lucide-react';
 
 export default function CommitteesEditor() {
-  const { content, refreshContent } = useContentState();
+  const { content, updateCommittees } = useContentState();
   const [items, setItems] = useState<Committee[]>(content.committees);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -73,8 +72,7 @@ export default function CommitteesEditor() {
         };
       }
     }
-    await setCommittees(committees);
-    await refreshContent();
+    await updateCommittees(committees);
     setPendingFiles({});
     setSaving(false);
     setSaved(true);
@@ -138,3 +136,4 @@ export default function CommitteesEditor() {
     </div>
   );
 }
+

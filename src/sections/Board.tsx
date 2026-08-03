@@ -1,34 +1,40 @@
 import { useCallback, useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { useContent } from '../context/ContentContext';
+import { useContent, siteContent as defaults } from '../context/ContentContext';
 import { useInView } from '../hooks/use-in-view';
 import { useSwipe } from '../hooks/use-swipe';
 
 export default function Board() {
   const content = useContent();
-  const boardImages = content.board.images;
+  const rawImages = content.board?.images;
+  const boardImages = (rawImages && rawImages.length > 0) ? rawImages : defaults.board.images;
   const { ref, isVisible } = useInView(0.2);
   const [activeImage, setActiveImage] = useState(0);
   const [animating, setAnimating] = useState(false);
 
+  const safeActive = Math.max(0, Math.min(activeImage, boardImages.length - 1));
+
   const goTo = useCallback((index: number) => {
-    if (animating) return;
+    if (animating || boardImages.length === 0) return;
     setAnimating(true);
-    setTimeout(() => { setActiveImage(index); setAnimating(false); }, 350);
-  }, [animating]);
+    const validIndex = ((index % boardImages.length) + boardImages.length) % boardImages.length;
+    setTimeout(() => { setActiveImage(validIndex); setAnimating(false); }, 350);
+  }, [animating, boardImages.length]);
 
   useEffect(() => {
-    if (!isVisible) return;
+    if (!isVisible || boardImages.length <= 1) return;
     const timer = setInterval(() => {
-      goTo((activeImage + 1) % boardImages.length);
+      goTo(safeActive + 1);
     }, 4500);
     return () => clearInterval(timer);
-  }, [isVisible, activeImage, boardImages.length, goTo]);
+  }, [isVisible, safeActive, boardImages.length, goTo]);
 
-  const prev = () => goTo((activeImage - 1 + boardImages.length) % boardImages.length);
-  const next = () => goTo((activeImage + 1) % boardImages.length);
+  const prev = () => goTo(safeActive - 1);
+  const next = () => goTo(safeActive + 1);
 
   const swipeHandlers = useSwipe({ onSwipeLeft: next, onSwipeRight: prev });
+
+  const currentImage = boardImages[safeActive] || '/assets/placeholder.png';
 
   return (
     <section ref={ref} className="relative min-h-screen w-full bg-black py-24 overflow-hidden border-t border-white/5">
@@ -51,9 +57,9 @@ export default function Board() {
             {...swipeHandlers}
           >
             <img
-              key={activeImage}
-              src={boardImages[activeImage]}
-              alt={`Enactus MSA Board ${activeImage + 1}`}
+              key={safeActive}
+              src={currentImage}
+              alt={`Enactus MSA Board ${safeActive + 1}`}
               className="w-full h-full object-cover transition-all duration-500 ease-out"
               style={{
                 opacity: animating ? 0.2 : 1,
@@ -78,7 +84,7 @@ export default function Board() {
             </button>
 
             <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-md px-3 py-1 rounded-full border border-white/10 text-white/70 text-xs font-mono tracking-widest">
-              {String(activeImage + 1).padStart(2, '0')} / {String(boardImages.length).padStart(2, '0')}
+              {String(safeActive + 1).padStart(2, '0')} / {String(boardImages.length).padStart(2, '0')}
             </div>
 
             <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2.5 bg-black/40 backdrop-blur-md px-4 py-2 rounded-full border border-white/10">
@@ -87,7 +93,7 @@ export default function Board() {
                   key={i}
                   onClick={() => goTo(i)}
                   aria-label={`Go to slide ${i + 1}`}
-                  className={`rounded-full transition-all duration-300 ${i === activeImage ? 'w-8 h-2.5 bg-amber-400 shadow-[0_0_12px_rgba(251,191,36,0.5)]' : 'w-2.5 h-2.5 bg-white/30 hover:bg-white/70'
+                  className={`rounded-full transition-all duration-300 ${i === safeActive ? 'w-8 h-2.5 bg-amber-400 shadow-[0_0_12px_rgba(251,191,36,0.5)]' : 'w-2.5 h-2.5 bg-white/30 hover:bg-white/70'
                     }`}
                 />
               ))}
@@ -103,10 +109,11 @@ export default function Board() {
         <div className={`mt-12 text-center max-w-2xl mx-auto transition-all duration-500 ${animating ? 'opacity-0 translate-y-2' : 'opacity-100 translate-y-0'
           } ${isVisible ? '' : 'opacity-0'}`}>
           <p className="text-white/70 text-base sm:text-lg leading-relaxed">
-            {content.board.description}
+            {content.board?.description || defaults.board.description}
           </p>
         </div>
       </div>
     </section>
   );
 }
+

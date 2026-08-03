@@ -8,8 +8,8 @@ import {
   writeBatch,
 } from 'firebase/firestore';
 import { db } from './firebase';
-import type { SiteContent, Committee, TeamMember } from '@/context/ContentContext';
-import { siteContent as defaults } from '@/context/ContentContext';
+import type { SiteContent, Committee, TeamMember } from '../context/ContentContext';
+import { siteContent as defaults } from '../context/ContentContext';
 
 // --- Fetch all site content ---
 

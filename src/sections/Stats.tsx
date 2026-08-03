@@ -15,9 +15,14 @@ function Counter({ end, duration = 2000, suffix = '' }: CounterProps) {
   const [hasAnimated, setHasAnimated] = useState(false);
 
   useEffect(() => {
+    if (hasAnimated) {
+      setCount(end);
+      return;
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !hasAnimated) {
+        if (entry.isIntersecting) {
           setHasAnimated(true);
           let startTime: number;
           const animate = (currentTime: number) => {
@@ -65,12 +70,12 @@ export default function Stats() {
           
           {/* Left text block */}
           <div className={`transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-            <p className="section-eyebrow mb-4">What We've Achieved</p>
+            <p className="section-eyebrow mb-4">{stats.eyebrow || "What We've Achieved"}</p>
             <h2 className="text-5xl sm:text-6xl lg:text-7xl font-black text-white uppercase leading-tight tracking-tighter">
-              Impact <span className="text-amber-400">In Numbers</span>
+              {stats.heading || 'Impact In Numbers'}
             </h2>
             <p className="mt-6 max-w-xl text-white/60 text-base sm:text-lg leading-relaxed font-light">
-              Enactus MSA combines ambitious ideas with structured teamwork to deliver meaningful projects, leadership experience, and long-term community results.
+              {stats.description}
             </p>
           </div>
 
@@ -79,35 +84,39 @@ export default function Stats() {
             <div className={`group border-l-4 border-amber-400 bg-white/[0.03] backdrop-blur-xl rounded-3xl p-8 sm:p-10 transition-all duration-500 hover:bg-white/[0.06] hover:border-amber-300 hover:shadow-[0_15px_40px_rgba(251,191,36,0.12)] ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
               <div className="flex items-center justify-between mb-4">
                 <p className="text-[11px] uppercase font-bold tracking-[0.25em] text-amber-400 flex items-center gap-2">
-                  <TrendingUp size={16} /> Years of Experience
+                  <TrendingUp size={16} /> {stats.stat1Title || 'Years of Experience'}
                 </p>
                 <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
               </div>
               <div className="flex items-end gap-3">
                 <span className="text-6xl sm:text-7xl font-black text-white leading-none tracking-tight">
-                  <Counter end={stats.yearsOfExperience} />
+                  <Counter end={stats.stat1Value} />
                 </span>
-                <span className="text-lg font-bold text-amber-400 uppercase tracking-widest mb-2">Years</span>
+                <span className="text-lg font-bold text-amber-400 uppercase tracking-widest mb-2">
+                  {stats.stat1Suffix || 'Years'}
+                </span>
               </div>
               <p className="mt-4 text-white/60 text-sm leading-relaxed font-light">
-                Equipping students with hands-on leadership, professional development, and real project management experience.
+                {stats.stat1Description}
               </p>
             </div>
 
             <div className={`group border-l-4 border-amber-400/60 bg-white/[0.03] backdrop-blur-xl rounded-3xl p-8 sm:p-10 transition-all duration-500 delay-150 hover:bg-white/[0.06] hover:border-amber-400 hover:shadow-[0_15px_40px_rgba(251,191,36,0.12)] ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
               <div className="flex items-center justify-between mb-4">
                 <p className="text-[11px] uppercase font-bold tracking-[0.25em] text-amber-400 flex items-center gap-2">
-                  <Target size={16} /> Projects Completed
+                  <Target size={16} /> {stats.stat2Title || 'Projects Completed'}
                 </p>
               </div>
               <div className="flex items-end gap-3">
                 <span className="text-6xl sm:text-7xl font-black text-amber-400 leading-none tracking-tight">
-                  <Counter end={stats.projectsCompleted} />
+                  <Counter end={stats.stat2Value} />
                 </span>
-                <span className="text-lg font-bold text-white/70 uppercase tracking-widest mb-2">Initiatives</span>
+                <span className="text-lg font-bold text-white/70 uppercase tracking-widest mb-2">
+                  {stats.stat2Suffix || 'Initiatives'}
+                </span>
               </div>
               <p className="mt-4 text-white/60 text-sm leading-relaxed font-light">
-                Well-structured projects that build community value, social innovation, and stakeholder trust.
+                {stats.stat2Description}
               </p>
             </div>
           </div>
@@ -117,3 +126,4 @@ export default function Stats() {
     </section>
   );
 }
+

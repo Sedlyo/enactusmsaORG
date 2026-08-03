@@ -39,7 +39,7 @@ const app = express();
 app.use(cors());
 
 // Upload endpoint
-app.post('/api/upload', upload.single('image'), (req, res) => {
+app.post(['/api/upload', '/api/upload.php'], upload.single('image'), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No valid image file provided.' });
   }
@@ -48,7 +48,7 @@ app.post('/api/upload', upload.single('image'), (req, res) => {
 });
 
 // Delete endpoint
-app.delete('/api/upload', express.json(), (req, res) => {
+app.delete(['/api/upload', '/api/upload.php'], express.json(), (req, res) => {
   const { path: filePath } = req.body;
   if (!filePath || !filePath.startsWith('/assets/uploads/')) {
     return res.status(400).json({ error: 'Invalid path.' });
